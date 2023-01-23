@@ -50,5 +50,5 @@ app.get("/", (req: express.Request, res: express.Response) => {
         Na resposta, chamamos a função status, indicamos 200 (success)
         e chamamos a função json onde podemos enviar qualquer dados.
     */
-  res.status(200).json("Servidor funciona!");
+  res.status(200).json("Server Api Store!");
 });
