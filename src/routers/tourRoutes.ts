@@ -1,5 +1,5 @@
 import express from 'express';
-import tourController from '../controllers/tourController';
+import tourController from '../controllers/TourController';
 
 const router = express.Router();
 
