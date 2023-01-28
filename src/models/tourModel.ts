@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { ITour } from "../interface/ITour";
 
-const tourSchema = new mongoose.Schema({
+const TourSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'A tour must have a name'],
@@ -19,4 +19,4 @@ const tourSchema = new mongoose.Schema({
 
 
 
-export const Tour = mongoose.model<ITour>("Tour", tourSchema);
+export const Tour = mongoose.model<ITour>("Tour", TourSchema);
