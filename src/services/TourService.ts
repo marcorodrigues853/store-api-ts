@@ -1,5 +1,5 @@
 import { ITour } from '../interface/ITour';
-import { Tour } from '../models/tourModel';
+import { Tour } from '../models/TourModel';
 
 
 class TourService {
