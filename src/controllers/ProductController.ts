@@ -1,12 +1,11 @@
 import { IProduct } from './../interface/IProducts';
 import express from 'express';
-import { Product } from '../models/ProductsModel';
 import ProductService from '../services/ProductService';
 
 class ProductController {
   async create(req: express.Request, res: express.Response) {
     try {
-      const createProduct = await ProductService.create(); // pass req.body
+      const createProduct = await ProductService.create(req.body); // pass req.body
       res.status(200).json(createProduct);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -28,6 +27,8 @@ class ProductController {
 
   async getOne(req: express.Request, res: express.Response) {
     try {
+      const product = await ProductService.getOne(req.params.id);
+      return res.status(200).json(product);
     } catch (error: unknown) {
       if (error instanceof Error) {
         res.status(400).json(error.message);
