@@ -16,7 +16,8 @@ const ProductSchema = new mongoose.Schema({
     thumbnails: { type: Array },
   },
   ratingsAveraged: { type: Number, default: 0 },
-  ratings: { ref: 'Ratings' },
+  // ratings: { ref: 'Ratings' },
+  ratings: {},
 });
 
 export const Product = mongoose.model<IProduct>('Product', ProductSchema);
