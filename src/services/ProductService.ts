@@ -1,5 +1,6 @@
 import { Product } from '../models/ProductsModel';
 import { IProduct } from './../interface/IProducts';
+import AppError from '../utilities/AppError';
 
 import { createOne } from './../controllers/HandlerFactory';
 class ProductService {
@@ -12,7 +13,7 @@ class ProductService {
     return allProducts;
   }
   async getOne(id: string) {
-    if (!id) throw new Error('Please pass an  product id.');
+    if (!id) new AppError('Please pass an  product id.', 422);
 
     const product = await Product.findById(id);
     return product;
