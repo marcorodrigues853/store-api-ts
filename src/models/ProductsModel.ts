@@ -9,7 +9,13 @@ const ProductSchema = new mongoose.Schema({
     min: 3,
     max: 30,
   },
-  description: { type: String, required: true, trim: true, min: 5, max: 200 },
+  description: {
+    type: String,
+    required: true,
+    trim: true,
+    min: 5,
+    max: 200,
+  },
   price: { type: Number, required: true, trim: true, min: 1 },
   taxID: { type: String, ref: 'Taxes' },
   photos: {
