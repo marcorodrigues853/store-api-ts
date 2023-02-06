@@ -3,6 +3,7 @@ import { User } from '../models/UsersModel';
 import { IUser } from './../interface/IUser';
 import bcrypt from 'bcryptjs';
 import TokenService from './TokenService';
+import AppError from '../utilities/AppError';
 
 class AuthService {
   async foundUser(user: IUser) {
@@ -12,6 +13,25 @@ class AuthService {
 
   async isValidPassword(user: IUser, foundUser: IUser) {
     return bcrypt.compareSync(user.password, foundUser.password);
+  }
+
+  async login(username: string, password: string) {
+    const foundUser = await User.findOne({ username });
+
+    if (!foundUser) {
+      throw new Error('User ${username} not found');
+    }
+    //* compare if passwords is the same
+    const hasValidPassword = bcrypt.compareSync(password, foundUser.password);
+
+    if (!hasValidPassword) new AppError('Invalid Password', 409);
+
+    const tokens = TokenService.generateTokens(foundUser);
+    await TokenService.saveToken(String(foundUser._id), tokens.refreshToken);
+    return {
+      ...tokens,
+      foundUser,
+    };
   }
 
   async register(newUser: IUser): Promise<any> {

@@ -40,21 +40,42 @@ class AuthController {
     }
   }
 
+  // async login(req: express.Request, res: express.Response) {
+  //   try {
+  //     console.log('AKI: ', req.body);
+  //     const foundUser: any = await AuthService.foundUser(req.body);
+
+  //     if (!foundUser) new AppError(`User email not found`, 500);
+
+  //     const isValidPassword = await AuthService.isValidPassword(
+  //       req.body,
+  //       foundUser,
+  //     );
+
+  //     if (!isValidPassword) new AppError('Password invalid', 500);
+  //     const token = this.generateAccessToken(foundUser._id, foundUser.roles);
+  //     return res.json({ token });
+  //   } catch (error: unknown) {
+  //     if (error instanceof Error) new AppError(error.message, 500);
+  //   }
+  // }
+
   async login(req: express.Request, res: express.Response) {
     try {
-      const foundUser: any = await AuthService.foundUser(req.body);
-      if (!foundUser) new AppError(`User email not found`, 500);
+      const { email, password } = req.body;
 
-      const isValidPassword = await AuthService.isValidPassword(
-        req.body,
-        foundUser,
-      );
+      const foundUser = await AuthService.login(email, password);
+      res.cookie('refreshToken', foundUser.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
 
-      if (!isValidPassword) new AppError('Password invalid', 500);
-      const token = this.generateAccessToken(foundUser._id, foundUser.roles);
-      return res.json({ token });
-    } catch (error: unknown) {
-      if (error instanceof Error) new AppError(error.message, 500);
+      return res.json({ message: 'Login success', foundUser });
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        console.log(e.message);
+      }
+      res.status(500).json('Login failed');
     }
   }
 
