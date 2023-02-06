@@ -1,17 +1,15 @@
-import express from 'express';
+import { Router } from 'express';
 import { check } from 'express-validator';
 import AuthController from '../controllers/AuthController';
 
-const router = express.Router();
+const router = Router();
 
 router.post(
-  '/registration',
+  '/register',
   [
-    check('username', "Username can't be empty").notEmpty(),
-    check(
-      'password',
-      'Password must be more than 8 an UpperCase.',
-    ).isStrongPassword({
+    check('email', "Username can't be empty").notEmpty(),
+    check('email', 'Email is not valid').isEmail(),
+    check('password').isStrongPassword({
       minLength: 8,
       minLowercase: 1,
       minUppercase: 1,
@@ -30,5 +28,7 @@ router.post(
 );
 
 router.post('/login', AuthController.login);
+router.post('/logout', AuthController.logout);
+router.post('/refresh', AuthController.refresh);
 
 export default router;
