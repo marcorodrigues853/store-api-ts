@@ -1,9 +1,7 @@
 import { Product } from '../models/ProductsModel';
 import { IProduct } from './../interface/IProducts';
-import { Request } from 'express';
 import AppError from '../utilities/AppError';
-
-import APIFilters from '../utilities/ApiFilters';
+import APIFilters from '../utilities/APIFilters';
 class ProductService {
   async create(product: IProduct) {
     const newProduct = await Product.create(product);
@@ -15,8 +13,6 @@ class ProductService {
       .sort()
       .limitFields()
       .paginate();
-
-    console.log('filters: ', filters);
 
     const products: IProduct[] = await filters.query;
     return products;
