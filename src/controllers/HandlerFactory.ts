@@ -1,6 +1,7 @@
-import { mongoose, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 import AppError from '../utilities/AppError';
+import APIFilters from '../utilities/APIFilters';
 
 export const createOne = (Model: Model<unknown>) => {
   async (req: Request, res: Response) => {
@@ -25,3 +26,61 @@ export const deleteOne = (Model: Model<unknown>) => {
     res.status(204).json({ status: 'success', data: null });
   };
 };
+
+export const updateOne =
+  (Model: Model<unknown>) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    const response = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!response) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: response,
+      },
+    });
+  };
+
+export const getOne =
+  (Model: Model<unknown>, popOptions: any) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    let query = Model.findById(req.params.id);
+    if (popOptions) query = query.populate(popOptions);
+    const response = await query;
+
+    if (!response) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: response,
+      },
+    });
+  };
+
+export const getAll =
+  (Model: Model<unknown>) => async (req: Request, res: Response) => {
+    const features = new APIFilters(Model.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    const response = await features.query;
+
+    res.status(200).json({
+      status: 'success',
+      results: response.length,
+      data: {
+        data: response,
+      },
+    });
+  };
