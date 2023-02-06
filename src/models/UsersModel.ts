@@ -1,5 +1,5 @@
+import { IUser } from './../interface/IUser';
 import mongoose from 'mongoose';
-import { IUser } from '../interface/IUser';
 
 const UserSchema = new mongoose.Schema({
   firstName: {
@@ -19,6 +19,7 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, 'A user must have an email'],
+    unique: true,
     min: 6,
     trim: true,
   },
@@ -28,14 +29,20 @@ const UserSchema = new mongoose.Schema({
     min: 8,
     max: 80,
   },
+  passwordConfirm: {
+    type: String,
+    required: [true, 'A user must confirm your password'],
+    min: 8,
+    max: 80,
+  },
   phone: {
     type: Number,
-    required: [true, 'A user must have a phone number'],
+    required: false,
     min: 5,
     max: 30,
     trim: true,
   },
-  image: { type: String, required: [true, 'A user must have an photo'] },
+  photo: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
