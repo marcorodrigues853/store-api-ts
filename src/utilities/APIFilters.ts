@@ -1,5 +1,3 @@
-import express from 'express';
-
 class APIFilters {
   query;
   queryString;
@@ -41,7 +39,7 @@ class APIFilters {
       const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
     } else {
-      this.query = this.query.sort('-createdAt');
+      this.query = this.query.sort('-createdAt'); // default order by createdAt
     }
 
     return this;
@@ -56,7 +54,7 @@ class APIFilters {
       const fields = this.queryString.fields.split(',').join(' ');
       this.query = this.query.select(fields);
     } else {
-      this.query = this.query.select('-__v');
+      this.query = this.query.select('-__v -password -passwordConfirm');
     }
 
     return this;
