@@ -9,7 +9,7 @@ interface TokenPayload {
 }
 class TokenService {
   generateTokens(user: any) {
-    const id = user.id;
+    const { id } = user;
     const roles: string[] = user.roles;
 
     const payload = {

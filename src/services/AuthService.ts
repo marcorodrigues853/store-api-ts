@@ -19,12 +19,12 @@ class AuthService {
     const foundUser = await User.findOne({ username });
 
     if (!foundUser) {
-      throw new Error('User ${username} not found');
+      throw new Error(`User ${username} not found`);
     }
     //* compare if passwords is the same
     const hasValidPassword = bcrypt.compareSync(password, foundUser.password);
 
-    if (!hasValidPassword) new AppError('Invalid Password', 409);
+    if (!hasValidPassword) throw new Error('Password invalid');
 
     const tokens = TokenService.generateTokens(foundUser);
     await TokenService.saveToken(String(foundUser._id), tokens.refreshToken);
@@ -68,6 +68,11 @@ class AuthService {
     } else {
       console.log('Role not found');
     }
+  }
+
+  async logout(refreshToken: string) {
+    const token = await TokenService.removeToken(refreshToken);
+    return token;
   }
 }
 
