@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import ProductController from '../controllers/ProductController';
-import ProductService from '../services/ProductService';
+import factory from '../controllers/HandlerFactory';
+import { Product } from '../models/ProductsModel';
+import authMiddleware from '../middleware/authMiddleware';
 
 const router = Router();
 
@@ -9,13 +11,15 @@ router.param('id', ProductController.checkID); // TODO: need to review
 
 router
   .route('/products')
-  .get(ProductController.getAll)
-  .post(ProductController.create)
+  .get(factory.getAll(Product))
+
+  // .get(ProductController.getAll)
+  .post(authMiddleware, ProductController.create)
   .put(ProductController.update);
 
 router
   .route('/products/:id')
   .get(ProductController.getOne)
-  .delete(ProductController.delete);
+  .delete(ProductController.deleteOne);
 
 export default router;
