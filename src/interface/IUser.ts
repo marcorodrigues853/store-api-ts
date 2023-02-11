@@ -8,6 +8,8 @@ export interface IUser {
   phone: string;
   isActive: boolean;
   photo: string;
-  createdAt: Date;
-  updatedAt: Date;
+  passwordChangedAt?: Date;
+  passwordResetToken?: string;
+  passwordResetExpires?: string;
+  createPasswordResetToken: () => string;
 }

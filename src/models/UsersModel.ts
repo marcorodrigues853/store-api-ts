@@ -1,4 +1,5 @@
-import { devNull } from 'os';
+import { randomUUID } from 'crypto';
+import { hashSync } from 'bcryptjs';
 import { IUser } from './../interface/IUser';
 import mongoose from 'mongoose';
 
@@ -44,13 +45,32 @@ const UserSchema = new mongoose.Schema(
       max: 30,
       trim: true,
     },
-    photo: { type: String, required: false },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
-    passwordResetExpires: { type: Date, required: false },
-    passwordResetToken: { type: String, required: false },
+    photo: { type: String },
+    passwordChangedAt: { type: Date },
+    passwordResetExpires: { type: Date },
+    passwordResetToken: { type: String },
   },
   { timestamps: true },
 );
+// console.log('SCHEMA1', UserSchema);
+UserSchema.pre(/^find/, function (next) {
+  // this points to the current query
+  this.find({ active: { $ne: false } });
+  next();
+});
 
-export const User = mongoose.model<IUser>('User', UserSchema);
+UserSchema.methods.createPasswordResetToken = async function () {
+  console.log('hiiii inbside');
+  const resetToken = randomUUID().toString(); // uuid v4
+  this.passwordResetToken = hashSync(resetToken, 7);
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  console.log({ resetToken }, this.passwordResetToken);
+  return resetToken;
+};
+
+// console.log('SCHEMA2', UserSchema.methods.createPasswordResetToken);
+export const User = mongoose.model<IUser & mongoose.Document>(
+  'User',
+  UserSchema,
+);
