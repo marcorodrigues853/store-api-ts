@@ -2,6 +2,9 @@ import { Product } from '../models/ProductsModel';
 import { IProduct } from './../interface/IProducts';
 import AppError from '../utilities/AppError';
 import APIFilters from '../utilities/APIFilters';
+import { User } from '../models/UsersModel';
+
+import factory from '../controllers/HandlerFactory';
 class ProductService {
   async create(product: IProduct) {
     const newProduct = await Product.create(product);
@@ -26,8 +29,16 @@ class ProductService {
   async update() {
     //
   }
+
+  async deleteOne(id: string) {
+    const deleted = await Product.findByIdAndDelete(id);
+    return deleted;
+  }
 }
-// const createProductAlex = factory.createOne(ProductAlex);
+
+const Model: any = Product;
+const createProduct = factory.createOne(Model);
+console.log(createProduct);
 // const createUserAlex = factory.createOne(UsertAlex);
 // const getProductAlex = factory.getOne(ProductAlex);
 // const getAllProductAlex = factory.getAll(ProductAlex);
