@@ -1,11 +1,11 @@
+import { User } from './../models/UsersModel';
 import AuthService from '../services/AuthService';
 import AppError from '../utilities/AppError';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/UsersModel';
-import { IUser } from '../interface/IUser';
+
 import { validationResult } from 'express-validator';
-import UserService from '../services/UserService';
+import Email from '../utilities/Email';
 
 class AuthController {
   async register(req: Request, res: Response) {
@@ -71,7 +71,7 @@ class AuthController {
     } catch (e: unknown) {
       if (e instanceof Error) {
         console.log(e.message);
-        return next(new AppError('Falhaste o lgin com sucesso', 500));
+        return next(new AppError('Falhaste o login com sucesso', 500));
       }
       res.status(500).json('Login failed');
     }
@@ -110,22 +110,52 @@ class AuthController {
   };
 
   async forgotPassword(req: Request, res: Response, next: NextFunction) {
-    //! 1) get user of posted email
-
+    // 1) get user of posted email
     // const user = await UserService.getOne(); // TODO: review with ALEX service once id  vs email
     const { email } = req.body;
-    const user = await User.findOne({ email });
+    const foundUser = await User.findOne({ email });
 
-    if (!user) next(new AppError('Email is invalid.', 404));
-    //! 2) Generate the random reset token
+    if (!foundUser) next(new AppError('Email is invalid.', 404));
 
-    // const resetToken = user.createPasswordResetToken(); // need to be created in userModel
-    // user.save({ validateBeforeSave: false }); // to avoid  validators
+    // 2) Generate the random reset token
+    await foundUser?.createPasswordResetToken();
 
-    //! 3) Send it to user's email
+    try {
+      await foundUser?.save({ validateBeforeSave: false }); // to avoid  validators
+
+      // 3) Send it to user's email
+      const resetURL = `${req.protocol}://${req.get(
+        'host',
+      )}/auth/resetPassword`;
+      const to = 'marcoaurelio853@gmail.com';
+      const subject = 'dalhe ze to';
+      const message = `ui ui ui ${resetURL}`;
+
+      await Email.sendEmail(to, subject, message);
+      console.log('enbiou');
+
+      res.status(200).json({
+        status: 'success',
+        message: 'Token sent to email!',
+      });
+    } catch (error) {
+      // define error
+      foundUser?.passwordResetToken;
+      foundUser?.passwordResetExpires;
+      await foundUser?.save({ validateBeforeSave: false });
+
+      return next(
+        new AppError(
+          'There was an error sending the email. Try again later!',
+          500,
+        ),
+      );
+    }
   }
-  async resetPassword(req: Request, res: Response) {
-    //
+
+  resetPassword(req: Request) {
+    console.log(req.param);
+    throw new Error('Method not implemented.');
   }
 }
 
