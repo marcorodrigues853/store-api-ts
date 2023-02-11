@@ -12,18 +12,23 @@ export const createOne = (Model: Model<unknown>) => {
       data: {
         data: response,
       },
+      requestedAt: new Date(Date.now()).toUTCString(),
     });
   };
 };
 
 export const deleteOne = (Model: Model<unknown>) => {
   async (req: Request, res: Response, next: NextFunction) => {
+
     const result = await Model.findByIdAndDelete(req.params.id);
 
-    if (!result) {
-      return next(new AppError('No results found', 404));
-    }
-    res.status(204).json({ status: 'success', data: null });
+    if (!result) next(new AppError('No results found', 404));
+
+    res.status(204).json({
+      status: 'success',
+      data: result,
+      requestedAt: new Date(Date.now()).toUTCString(),
+    });
   };
 };
 
@@ -35,15 +40,14 @@ export const updateOne =
       runValidators: true,
     });
 
-    if (!response) {
-      return next(new AppError('No document found with that ID', 404));
-    }
+    if (!response) next(new AppError('No document found with that ID', 404));
 
     res.status(200).json({
       status: 'success',
       data: {
         data: response,
       },
+      requestedAt: new Date(Date.now()).toUTCString(),
     });
   };
 
@@ -54,27 +58,27 @@ export const getOne =
     if (popOptions) query = query.populate(popOptions);
     const response = await query;
 
-    if (!response) {
-      return next(new AppError('No document found with that ID', 404));
-    }
+    if (!response) next(new AppError('No document found with that ID', 404));
 
     res.status(200).json({
       status: 'success',
       data: {
         data: response,
       },
+      requestedAt: new Date(Date.now()).toUTCString(),
     });
   };
 
 export const getAll =
-  (Model: Model<unknown>) => async (req: Request, res: Response) => {
-    const features = new APIFilters(Model.find(), req.query)
+  (Model: any) => async (req: Request, res: Response, next: NextFunction) => {
+    console.log('akiiiiiiiii');
+    const filters = new APIFilters(Model.find(), req.query)
       .filter()
       .sort()
       .limitFields()
       .paginate();
 
-    const response = await features.query;
+    const response = await filters.query;
 
     res.status(200).json({
       status: 'success',
@@ -82,5 +86,8 @@ export const getAll =
       data: {
         data: response,
       },
+      requestedAt: new Date(Date.now()).toUTCString(),
     });
   };
+
+export default { getAll, getOne, deleteOne, createOne, updateOne };

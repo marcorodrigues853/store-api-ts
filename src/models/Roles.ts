@@ -1,8 +1,11 @@
 import mongoose from 'mongoose';
 
-const RoleSchema = new mongoose.Schema({
-  value: { type: String, required: true, default: 'USER' },
-});
+const RoleSchema = new mongoose.Schema(
+  {
+    value: { type: String, required: true, default: 'USER' },
+  },
+  { timestamps: true },
+);
 
 export interface RoleType extends mongoose.Document {
   value: string;
