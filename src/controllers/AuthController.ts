@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 
 import { validationResult } from 'express-validator';
 import Email from '../utilities/Email';
-import bcrypt, { compareSync, hashSync } from 'bcryptjs';
+import { compareSync, hashSync } from 'bcryptjs';
 
 class AuthController {
   async register(req: Request, res: Response) {
@@ -60,7 +60,6 @@ class AuthController {
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
-
       const foundUser = await AuthService.login(email, password);
 
       res.cookie('refreshToken', foundUser.refreshToken, {
@@ -69,9 +68,9 @@ class AuthController {
       });
 
       return res.json({ message: 'Login success', foundUser });
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        console.log(e.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error.message);
         return next(new AppError('Falhaste o login com sucesso', 500));
       }
       res.status(500).json('Login failed');
@@ -96,7 +95,25 @@ class AuthController {
   }
 
   async refresh(req: Request, res: Response) {
-    //
+    try {
+      if (!req.cookies.refreshToken) {
+        return res.status(400).json({ message: 'Refresh token not found' });
+      }
+      const { refreshToken } = req.cookies;
+
+      const foundUser = await AuthService.refresh(refreshToken);
+      res.cookie('refreshToken', foundUser.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+
+      return res.json(foundUser);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+      res.status(500).json('Refresh token failed');
+    }
   }
 
   generateAccessToken = (id: string, roles: string[]) => {
@@ -166,20 +183,13 @@ class AuthController {
   }
 
   async resetPassword(req: Request, res: Response, next: NextFunction) {
-    console.log(req.params.token);
     //* 1) Get user based on the token
-
     const { token } = req.params;
-    console.log(token);
+    // const hashedToken = await bcrypt.hashSync(token, 7);
 
-    // const hashedToken = randomUUID().update(req.params.token);
-
-    const hashedToken = await bcrypt.hashSync(token, 7);
-    console.log(token);
-
-    const isTrue = compareSync(token, hashedToken);
-    console.log('isTrue: ', isTrue);
-    console.log('hashedToken', hashedToken);
+    // const isTrue = compareSync(token, hashedToken);
+    // console.log('isTrue: ', isTrue);
+    // console.log('hashedToken', hashedToken);
 
     //* 2) if token has not expired, and there is user, set the new password
     const foundUser = await User.findOne({
@@ -187,21 +197,20 @@ class AuthController {
       passwordResetExpires: { $gt: Date.now() },
     });
 
-    console.log('foundUser', foundUser);
-
-    if (!foundUser) {
-      return next(new AppError('Token is invalid or has expired', 400));
-    }
+    if (!foundUser)
+      res.status(400).json({
+        status: 'Bad Request',
+        message: 'Token is invalid or not found',
+      });
+    //return next(new AppError('Token is invalid or has expired', 400));
 
     //* 3) Update changePasswordAt property for the user
-
-    console.log('passou');
 
     let authToken;
     if (foundUser) {
       const hashedPassword = hashSync(req.body.password);
-      foundUser.passwordConfirm = hashedPassword;
       foundUser.password = hashedPassword;
+      foundUser.passwordConfirm = hashedPassword;
       foundUser.passwordResetExpires = undefined;
       foundUser.passwordResetToken = undefined;
       await foundUser.save();
@@ -218,10 +227,6 @@ class AuthController {
       token: authToken,
     });
   }
-
-  // buildRecoveryURL(protocol: string, host: string, token: string) {
-  //   return `${protocol}://${host}/auth/resetPassword/${token}`;
-  // }
 }
 
 export default new AuthController();

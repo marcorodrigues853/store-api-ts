@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { hashSync } from 'bcryptjs';
+import { hashSync, compareSync } from 'bcryptjs';
 import { IUser } from './../interface/IUser';
 import mongoose from 'mongoose';
 
@@ -59,10 +59,21 @@ UserSchema.pre(/^find/, function (next) {
   next();
 });
 
+UserSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) next();
+  this.passwordChangedAt = new Date(Date.now()); //* to force TS once he recognize Date.now as a
+  next();
+});
+
+UserSchema.methods.hasCorrectPassword = async function (
+  candidatePassword: string,
+  userPassword: string,
+) {
+  return compareSync(candidatePassword, userPassword);
+};
 UserSchema.methods.createPasswordResetToken = async function () {
-  console.log('hiiii inbside');
   const resetToken = randomUUID(); // uuid v4
-  this.passwordResetToken = await hashSync(resetToken, 7); // TODO: need to be reviewed with Alex Ageev
+  // this.passwordResetToken = await hashSync(resetToken, 7); // TODO: need to be reviewed with Alex Ageev
   this.passwordResetToken = resetToken; // did once encrypted token has different when i use   hashsync
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10m
   console.log('expires :', Date.now() + 10 * 60 * 1000);

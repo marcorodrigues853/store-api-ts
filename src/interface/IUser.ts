@@ -12,4 +12,8 @@ export interface IUser {
   passwordResetToken?: string;
   passwordResetExpires?: string;
   createPasswordResetToken: () => string;
+  hasCorrectPassword: (
+    candidatePassword: string,
+    userPassword: string,
+  ) => boolean;
 }
