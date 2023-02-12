@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { User } from '../models/UsersModel';
 import UserService from '../services/UserService';
 import factory from './HandlerFactory';
 import AppError from '../utilities/AppError';
+import AuthService from '../services/AuthService';
 
 class UserController {
   async getUser() {
@@ -61,6 +62,36 @@ class UserController {
       }
     }
   }
+
+  // async updatePassword(req: Request, res: Response, next: NextFunction) {
+  //   // 1) get user from collection
+  //   const foundUser = await User.findById(req.user.id).select('+password');
+
+  //   // 2) Check if POSTed current password is correct
+  //   const { passwordCurrent } = req.body;
+  //   if (!foundUser?.hasCorrectPassword(passwordCurrent, foundUser.password)) {
+  //     return next(
+  //       new AppError('Your current password is wrong. Please try again', 401),
+  //     );
+  //   }
+
+  //   // 3) If so, update password
+  //   foundUser.password = req.body.password;
+  //   foundUser.passwordConfirm = req.body.passwordConfirm;
+  //   await foundUser.save();
+
+  //   // 4) Log user in, send jwt
+  //   // TODO: need to be reviewed once is repeated
+  //   const authToken = await AuthService.login(
+  //     foundUser.email,
+  //     req.body.password,
+  //   );
+  //   return res.status(200).json({
+  //     status: 200,
+  //     message: 'Password changed with success',
+  //     token: authToken,
+  //   });
+  // }
 }
 
 export default new UserController();

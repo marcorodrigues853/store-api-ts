@@ -1,17 +1,17 @@
 import { Role } from '../models/Roles';
 import { User } from '../models/UsersModel';
 import { IUser } from './../interface/IUser';
-import bcrypt from 'bcryptjs';
+import { compareSync, hashSync } from 'bcryptjs';
 import TokenService from './TokenService';
 import AppError from '../utilities/AppError';
 
 class AuthService {
-  async foundUser(user: IUser) {
-    return await User.findOne({ email: user.email });
-  }
+  // async foundUser(user: IUser) {
+  //   return await User.findOne({ email: user.email });
+  // }
 
   async isValidPassword(user: IUser, foundUser: IUser) {
-    return bcrypt.compareSync(user.password, foundUser.password);
+    return compareSync(user.password, foundUser.password);
   }
 
   async login(email: string, password: string) {
@@ -21,7 +21,7 @@ class AuthService {
       throw new Error(`User ${email} not found`);
     }
     //* compare if passwords is the same
-    const hasValidPassword = bcrypt.compareSync(password, foundUser.password);
+    const hasValidPassword = compareSync(password, foundUser.password);
 
     if (!hasValidPassword) throw new Error('Password invalid');
 
@@ -39,12 +39,14 @@ class AuthService {
       //TODO: need to check throw ApiError.BadRequest('User already exists.');
     }
 
-    const hashPassword = bcrypt.hashSync(newUser.password, 7);
     const hasConfirmedPassword =
       JSON.stringify(newUser.password) ===
       JSON.stringify(newUser.passwordConfirm);
 
     if (!hasConfirmedPassword) throw new Error('Password not coiso');
+
+    const hashPassword = hashSync(newUser.password, 7);
+
     const userRole = await Role.findOne({ value: 'USER' });
 
     if (userRole) {
@@ -72,6 +74,32 @@ class AuthService {
   async logout(refreshToken: string) {
     const token = await TokenService.removeToken(refreshToken);
     return token;
+  }
+
+  async refresh(refreshToken: string) {
+    if (!refreshToken) {
+      new AppError('Refresh token not found', 404);
+    }
+    const userData = TokenService.validateRefreshToken(refreshToken);
+    const tokenFromDb = TokenService.findToken(refreshToken);
+
+    if (!userData || !tokenFromDb) {
+      new AppError('Invalid refresh token', 401);
+    }
+
+    const foundUser = await User.findById(userData?.id);
+    console.log(foundUser);
+    const tokens = TokenService.generateTokens(foundUser);
+    await TokenService.saveToken(String(userData?.id), tokens.refreshToken);
+
+    return {
+      ...tokens,
+      foundUser,
+    };
+  }
+
+  async forgotPassword(refreshToken: string) {
+    //
   }
 }
 
