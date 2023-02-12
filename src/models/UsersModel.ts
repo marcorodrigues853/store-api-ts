@@ -61,9 +61,11 @@ UserSchema.pre(/^find/, function (next) {
 
 UserSchema.methods.createPasswordResetToken = async function () {
   console.log('hiiii inbside');
-  const resetToken = randomUUID().toString(); // uuid v4
-  this.passwordResetToken = hashSync(resetToken, 7);
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  const resetToken = randomUUID(); // uuid v4
+  this.passwordResetToken = await hashSync(resetToken, 7); // TODO: need to be reviewed with Alex Ageev
+  this.passwordResetToken = resetToken; // did once encrypted token has different when i use   hashsync
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10m
+  console.log('expires :', Date.now() + 10 * 60 * 1000);
 
   console.log({ resetToken }, this.passwordResetToken);
   return resetToken;
