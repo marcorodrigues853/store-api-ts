@@ -7,7 +7,6 @@ import AppError from '../utilities/AppError';
 
 class AuthService {
   async foundUser(user: IUser) {
-    console.log('USER: ', user);
     return await User.findOne({ email: user.email });
   }
 
@@ -15,11 +14,11 @@ class AuthService {
     return bcrypt.compareSync(user.password, foundUser.password);
   }
 
-  async login(username: string, password: string) {
-    const foundUser = await User.findOne({ username });
+  async login(email: string, password: string) {
+    const foundUser = await User.findOne({ email });
 
     if (!foundUser) {
-      throw new Error(`User ${username} not found`);
+      throw new Error(`User ${email} not found`);
     }
     //* compare if passwords is the same
     const hasValidPassword = bcrypt.compareSync(password, foundUser.password);
