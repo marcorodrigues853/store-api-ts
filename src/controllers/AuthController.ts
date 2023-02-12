@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 
 import { validationResult } from 'express-validator';
 import Email from '../utilities/Email';
+import bcrypt, { compareSync, hashSync } from 'bcryptjs';
 
 class AuthController {
   async register(req: Request, res: Response) {
@@ -109,6 +110,13 @@ class AuthController {
     });
   };
 
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns
+   */
   async forgotPassword(req: Request, res: Response, next: NextFunction) {
     // 1) get user of posted email
     // const user = await UserService.getOne(); // TODO: review with ALEX service once id  vs email
@@ -118,7 +126,7 @@ class AuthController {
     if (!foundUser) next(new AppError('Email is invalid.', 404));
 
     // 2) Generate the random reset token
-    await foundUser?.createPasswordResetToken();
+    const resetToken = await foundUser?.createPasswordResetToken();
 
     try {
       await foundUser?.save({ validateBeforeSave: false }); // to avoid  validators
@@ -126,23 +134,27 @@ class AuthController {
       // 3) Send it to user's email
       const resetURL = `${req.protocol}://${req.get(
         'host',
-      )}/auth/resetPassword`;
+      )}/auth/resetPassword/${resetToken}`;
+
       const to = 'marcoaurelio853@gmail.com';
-      const subject = 'dalhe ze to';
-      const message = `ui ui ui ${resetURL}`;
+      const subject = 'Tests Alex project';
+      const message = `Link to reset password ${resetURL}`;
 
       await Email.sendEmail(to, subject, message);
-      console.log('enbiou');
+      console.log('enbiou mail');
 
       res.status(200).json({
         status: 'success',
         message: 'Token sent to email!',
       });
     } catch (error) {
-      // define error
-      foundUser?.passwordResetToken;
-      foundUser?.passwordResetExpires;
-      await foundUser?.save({ validateBeforeSave: false });
+      // TODO: define error
+      // clause guard to reset token to prevent security breaches
+      if (foundUser) {
+        foundUser.passwordResetToken = undefined;
+        foundUser.passwordResetExpires = undefined;
+        await foundUser?.save({ validateBeforeSave: false });
+      }
 
       return next(
         new AppError(
@@ -153,10 +165,63 @@ class AuthController {
     }
   }
 
-  resetPassword(req: Request) {
-    console.log(req.param);
-    throw new Error('Method not implemented.');
+  async resetPassword(req: Request, res: Response, next: NextFunction) {
+    console.log(req.params.token);
+    //* 1) Get user based on the token
+
+    const { token } = req.params;
+    console.log(token);
+
+    // const hashedToken = randomUUID().update(req.params.token);
+
+    const hashedToken = await bcrypt.hashSync(token, 7);
+    console.log(token);
+
+    const isTrue = compareSync(token, hashedToken);
+    console.log('isTrue: ', isTrue);
+    console.log('hashedToken', hashedToken);
+
+    //* 2) if token has not expired, and there is user, set the new password
+    const foundUser = await User.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    console.log('foundUser', foundUser);
+
+    if (!foundUser) {
+      return next(new AppError('Token is invalid or has expired', 400));
+    }
+
+    //* 3) Update changePasswordAt property for the user
+
+    console.log('passou');
+
+    let authToken;
+    if (foundUser) {
+      const hashedPassword = hashSync(req.body.password);
+      foundUser.passwordConfirm = hashedPassword;
+      foundUser.password = hashedPassword;
+      foundUser.passwordResetExpires = undefined;
+      foundUser.passwordResetToken = undefined;
+      await foundUser.save();
+
+      //* 4) Log the user in, send JWT to the client
+      const { email, password } = foundUser;
+      console.log(email, password, req.body.password);
+      authToken = await AuthService.login(email, req.body.password);
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message: 'Password changed with success',
+      token: authToken,
+    });
   }
+
+  // buildRecoveryURL(protocol: string, host: string, token: string) {
+  //   return `${protocol}://${host}/auth/resetPassword/${token}`;
+  // }
 }
 
 export default new AuthController();
