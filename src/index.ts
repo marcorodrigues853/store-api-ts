@@ -3,12 +3,17 @@ import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cors from 'cors';
+// import { rateLimit } from 'express-rate-limit';
 
 import productRouter from './routers/productRouter';
 import authRouter from './routers/authRouter';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import userRouter from './routers/userRouter';
+import ExpressMongoSanitize from 'express-mongo-sanitize';
+import hpp from 'hpp';
+// import xss from 'xss-clean';
+// import helmet from 'helmet';
 
 dotenv.config();
 
@@ -17,9 +22,21 @@ const PORT = Number(process.env.PORT || 8888);
 
 const app = express();
 
+// Set Security HTTP headers
+// app.use(helmet());
+
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// limit requests to 1000 by hour
+// const limiter = rateLimit({
+//   max: 1000,
+//   windowMs: 60 * 60 * 10000,
+//   message: 'Too many request from this IP, try again in a hour',
+// });
+
+// app.use('/api', limiter); // apply limiter only to routes o start with /api
 
 //* MIDDLEWARE's
 
@@ -33,16 +50,23 @@ app.use(cors());
 app.options('*', cors());
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json({ limit: '20kb' })); //* limit the size of request
+
+// Data sanitization against NOSQL query injection
+
+app.use(ExpressMongoSanitize());
+// Data sanitization against NOSQL query injection
+// app.use(xss());
+
+//* Prevent parameter pollution with filter
+app.use(
+  hpp({
+    whitelist: ['name', 'price', 'createdAt'],
+  }),
+);
+
 app.use(cookieParser());
 app.use(fileUpload());
-
-// app.use(
-//   (req: express.Request, res: express.Response, next: express.NextFunction) => {
-//     console.log('Run every time do you call API -  middleware  ON ⛔️ 😂 🇵🇹');
-//     next();
-//   },
-// );
 
 app.use('/auth', authRouter);
 app.use('/api', productRouter);
