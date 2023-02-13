@@ -12,6 +12,7 @@ import fileUpload from 'express-fileupload';
 import userRouter from './routers/userRouter';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
+import reviewRouter from './routers/reviewRouter';
 // import xss from 'xss-clean';
 // import helmet from 'helmet';
 
@@ -71,6 +72,7 @@ app.use(fileUpload());
 app.use('/auth', authRouter);
 app.use('/api', productRouter);
 app.use('/api', userRouter);
+app.use('/api/reviews', reviewRouter);
 
 const connectToDb = async () => {
   try {
