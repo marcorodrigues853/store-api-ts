@@ -3,13 +3,16 @@ import AppError from '../utilities/AppError';
 
 class FactoryCRUDService {
   Model: any;
-  constructor(Model: any) {
+  popOptions: any;
+  constructor(Model: any, popOptions = null) {
     this.Model = Model;
+    if (popOptions) this.popOptions;
   }
   async create(object: any) {
     const newCreate = await this.Model.create(object);
     return newCreate;
   }
+
   async getAll(queryObject: any) {
     const filters = new APIFilters(this.Model.find(), queryObject)
       .filter()
@@ -23,10 +26,17 @@ class FactoryCRUDService {
   async getOne(id: string) {
     if (!id) new AppError('Please pass an  product id.', 422);
 
-    const one = await this.Model.findById(id);
-    return one;
+    let query = this.Model.findById(id);
+    if (this.popOptions) query = query.populate(this.popOptions);
+
+    const response = await query;
+    return response;
   }
   async update() {
+    //
+  }
+
+  updateOne() {
     //
   }
 
