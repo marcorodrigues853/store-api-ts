@@ -19,7 +19,6 @@ export const createOne = (Model: Model<unknown>) => {
 
 export const deleteOne = (Model: Model<unknown>) => {
   async (req: Request, res: Response, next: NextFunction) => {
-
     const result = await Model.findByIdAndDelete(req.params.id);
 
     if (!result) next(new AppError('No results found', 404));
@@ -83,9 +82,7 @@ export const getAll =
     res.status(200).json({
       status: 'success',
       results: response.length,
-      data: {
-        data: response,
-      },
+      data: response,
       requestedAt: new Date(Date.now()).toUTCString(),
     });
   };
