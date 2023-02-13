@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { IProduct } from '../interface/IProducts';
+import { type } from 'os';
 
 const ProductSchema = new mongoose.Schema(
   {
@@ -23,10 +24,20 @@ const ProductSchema = new mongoose.Schema(
       thumbnails: { type: Array },
     },
     ratingsAveraged: { type: Number, default: 0 },
-    // ratings: { ref: 'Ratings' },
-    ratings: {},
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   },
-  { timestamps: true },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+    timestamps: true,
+  },
 );
+
+//* Virtual populate to connect to fields
+// ProductSchema.virtual('reviews', {
+//   ref: 'Review',
+//   foreignField: 'product',
+//   localField: '_id',
+// });
 
 export const Product = mongoose.model<IProduct>('Product', ProductSchema);

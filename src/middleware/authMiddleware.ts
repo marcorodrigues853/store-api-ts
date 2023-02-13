@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 
+interface RequestWithUser extends Request {
+  user: any;
+}
+
 export default (req: any, res: Response, next: NextFunction) => {
   try {
     if (req.method === 'OPTIONS') next();
