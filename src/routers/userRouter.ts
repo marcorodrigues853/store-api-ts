@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 import UserController from '../controllers/UserController';
 import authMiddleware from '../middleware/authMiddleware';
 
@@ -20,5 +19,7 @@ router
 //   authMiddleware,
 //   UserController.updatePassword,
 // );
+
+router.route('/usersTeste').get(UserController.getAll2);
 
 export default router;
