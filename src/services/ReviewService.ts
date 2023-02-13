@@ -1,3 +1,4 @@
+import { FilterQuery } from 'mongoose';
 import { IReview } from '../interface/IReview';
 import { Review } from '../models/ReviewModel';
 
@@ -7,8 +8,8 @@ class ReviewService {
     return newReview;
   }
 
-  async getAll() {
-    const reviews = await Review.find();
+  async getAll(filter: FilterQuery<IReview>) {
+    const reviews = await Review.find(filter);
     return reviews;
   }
 }

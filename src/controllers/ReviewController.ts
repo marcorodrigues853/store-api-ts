@@ -8,7 +8,10 @@ interface RequestWithUser extends Request {
 class Review {
   async getAll(req: Request, res: Response) {
     try {
-      const reviews = await ReviewService.getAll();
+      let filter = {};
+
+      if (req.params.id) filter = { product: req.params.id };
+      const reviews = await ReviewService.getAll(filter);
       // pass to service
 
       res.status(200).json({

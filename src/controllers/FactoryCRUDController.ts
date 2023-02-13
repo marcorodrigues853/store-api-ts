@@ -17,7 +17,7 @@ class FactoryCRUDController {
   createOne() {
     async (req: Request, res: Response, next: NextFunction) => {
       const response = await this.service.create();
-      if (!response) next(new AppError(''));
+      if (!response) next(new AppError('3333', 333));
       // const response = await this.Model.create(req.body);
 
       res.status(201).json({
