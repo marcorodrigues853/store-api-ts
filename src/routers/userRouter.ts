@@ -12,7 +12,7 @@ router
 
 router
   .route('/users/:id')
-  .get(authMiddleware,UserController.getOne)
+  .get(authMiddleware, UserController.getOne)
   .delete(UserController.deleteOne);
 
 // router.patch(

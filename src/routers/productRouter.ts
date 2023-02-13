@@ -3,6 +3,7 @@ import ProductController from '../controllers/ProductController';
 import factory from '../controllers/HandlerFactory';
 import { Product } from '../models/ProductsModel';
 import authMiddleware from '../middleware/authMiddleware';
+import ReviewController from '../controllers/ReviewController';
 
 const router = Router();
 
@@ -21,5 +22,9 @@ router
   .route('/products/:id')
   .get(ProductController.getOne)
   .delete(ProductController.deleteOne);
+
+router
+  .route('/products/:id/reviews')
+  .post(authMiddleware, ReviewController.createOne);
 
 export default router;

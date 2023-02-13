@@ -2,7 +2,6 @@ import { Product } from '../models/ProductsModel';
 import { IProduct } from './../interface/IProducts';
 import AppError from '../utilities/AppError';
 import APIFilters from '../utilities/APIFilters';
-import { User } from '../models/UsersModel';
 
 import factory from '../controllers/HandlerFactory';
 class ProductService {
@@ -23,7 +22,7 @@ class ProductService {
   async getOne(id: string) {
     if (!id) new AppError('Please pass an  product id.', 422);
 
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate('reviews');
     return product;
   }
   async update() {
