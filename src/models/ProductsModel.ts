@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { IProduct } from '../interface/IProducts';
-import { type } from 'os';
 
 const ProductSchema = new mongoose.Schema(
   {
@@ -32,6 +31,9 @@ const ProductSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+ProductSchema.index({ price: 1, reviews: 1 });
+ProductSchema.index({ reviews: 1 });
 
 //* Virtual populate to connect to fields
 // ProductSchema.virtual('reviews', {

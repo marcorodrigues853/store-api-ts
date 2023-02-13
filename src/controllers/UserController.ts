@@ -1,11 +1,16 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { User } from '../models/UsersModel';
 import UserService from '../services/UserService';
 import factory from './HandlerFactory';
 import AppError from '../utilities/AppError';
-import AuthService from '../services/AuthService';
+import FactoryCRUDController from './FactoryCRUDController';
 
 class UserController {
+  async getAll2() {
+    console.log('entrou');
+    await new FactoryCRUDController(User).getAll;
+    console.log('saiu');
+  }
   async getUser() {
     console.log('entrou');
     console.log(User);

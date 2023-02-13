@@ -32,6 +32,8 @@ const ReviewSchema = new mongoose.Schema(
   },
 );
 
+ReviewSchema.index({ product: 1, user: 1 });
+
 ReviewSchema.pre(/^find/, function (next) {
   //*  this  does like a join query and  get has reference the field in colecction that inside has ref: of the model
   // this.populate({ path: 'user', select: 'firstName lastName' }).populate({
