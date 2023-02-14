@@ -22,7 +22,7 @@ const ProductSchema = new mongoose.Schema(
     photos: {
       thumbnails: { type: Array },
     },
-    ratingQuantities: { type: Number, default: 0 },
+    ratingQuantity: { type: Number, default: 0 },
     ratingsAveraged: { type: Number, default: 0 },
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   },
