@@ -28,7 +28,7 @@ class AuthController {
         // secure: true para https
       });
 
-      return res.status(201).json({ message: 'User created', createdUser });
+      return res.status(201).json({ message: 'User created', ...createdUser });
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -67,7 +67,7 @@ class AuthController {
         httpOnly: true,
       });
 
-      return res.json({ message: 'Login success', foundUser });
+      return res.json({ message: 'Login success', data: foundUser });
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -224,7 +224,7 @@ class AuthController {
     return res.status(200).json({
       status: 200,
       message: 'Password changed with success',
-      token: authToken,
+      data: authToken,
     });
   }
 }
