@@ -8,5 +8,6 @@ export interface IReview {
 }
 
 export interface IReviewModel extends Model<IReview> {
+  actualReview: any;
   calcAverageRatings: (id: any) => Promise<void>;
 }

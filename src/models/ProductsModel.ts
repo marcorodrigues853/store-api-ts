@@ -22,8 +22,17 @@ const ProductSchema = new mongoose.Schema(
     photos: {
       thumbnails: { type: Array },
     },
-    ratingQuantity: { type: Number, default: 0 },
-    ratingsAveraged: { type: Number, default: 0 },
+    ratingQuantity: {
+      type: Number,
+      default: 0,
+    },
+    ratingsAveraged: {
+      type: Number,
+      default: 0,
+      min: [0, 'Rating must be a number equal or above 1'],
+      max: [5, 'Rating must be a number equal or below 5'],
+      set: (value: number) => value.toFixed(1),
+    },
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   },
   {
