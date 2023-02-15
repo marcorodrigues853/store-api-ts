@@ -1,3 +1,4 @@
+import { NextFunction } from 'express';
 import { IReview, IReviewModel } from './../interface/IReview';
 import mongoose from 'mongoose';
 import { Product } from './ProductsModel';
@@ -34,7 +35,8 @@ const ReviewSchema = new mongoose.Schema(
   },
 );
 
-ReviewSchema.index({ product: 1, user: 1 });
+//* unique
+ReviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
 ReviewSchema.pre(/^find/, function (next) {
   //*  this  does like a join query and  get has reference the field in colecction that inside has ref: of the model
@@ -63,15 +65,27 @@ ReviewSchema.statics.calcAverageRatings = async function (productId: string) {
       },
     },
   ]);
+
   console.log(stats);
+
   await Product.findByIdAndUpdate(productId, {
-    ratingQuantity: stats[0].numberOfRating,
-    ratingsAveraged: stats[0].averageRating,
+    ratingQuantity: stats[0].numberOfRating ?? 0,
+    ratingsAveraged: stats[0].averageRating ?? 0,
   });
 };
 
 ReviewSchema.post('save', async function () {
   Review.calcAverageRatings(this.product);
+});
+
+ReviewSchema.pre(/^findOneAnd/, async function (next: any) {
+  Review.actualReview = await this.findOne();
+  console.log('Review.actualReview: ', Review.actualReview);
+  next();
+});
+
+ReviewSchema.post(/^findOneAnd/, async function () {
+  await Review.actualReview.calcAverageRatings(Review.actualReview.product);
 });
 
 export const Review: IReviewModel = mongoose.model<IReview, IReviewModel>(
