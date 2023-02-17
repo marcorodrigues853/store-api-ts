@@ -5,19 +5,19 @@ const ProductSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, 'Please provide a name'],
       trim: true,
       min: 3,
       max: 30,
     },
     description: {
       type: String,
-      required: true,
+      required: [true, 'A description is required'],
       trim: true,
       min: 5,
       max: 200,
     },
-    price: { type: Number, required: true, trim: true, min: 1 },
+    price: { type: Number, required: [true, 'A price is required'],, trim: true, min: 1 },
     taxID: { type: String, ref: 'Taxes' },
     photos: {
       thumbnails: { type: Array },
@@ -42,7 +42,6 @@ const ProductSchema = new mongoose.Schema(
 );
 
 ProductSchema.index({ price: 1, ratingsAveraged: -1 });
-// ProductSchema.index({ reviews: 1 });
 
 //* Virtual populate to connect to fields
 ProductSchema.virtual('reviews', {
