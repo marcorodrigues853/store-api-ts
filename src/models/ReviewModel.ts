@@ -1,8 +1,6 @@
-import { NextFunction } from 'express';
 import { IReview, IReviewModel } from './../interface/IReview';
 import mongoose from 'mongoose';
 import { Product } from './ProductsModel';
-import { stat } from 'fs';
 
 const ReviewSchema = new mongoose.Schema(
   {
@@ -39,15 +37,9 @@ const ReviewSchema = new mongoose.Schema(
 ReviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
 ReviewSchema.pre(/^find/, function (next) {
-  //*  this  does like a join query and  get has reference the field in colecction that inside has ref: of the model
-  // this.populate({ path: 'user', select: 'firstName lastName' }).populate({
-  //   path: 'product',
-  //   select: 'name photo',
-  // });
-
   this.populate({
-    path: 'product',
-    select: 'name photo',
+    path: 'user',
+    select: 'firstName lastName photo',
   });
   next();
 });
