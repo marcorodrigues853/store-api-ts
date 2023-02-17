@@ -25,8 +25,14 @@ class ProductService {
     const product = await Product.findById(id).populate('reviews');
     return product;
   }
-  async update() {
-    //
+  async update(id: string, product: IProduct) {
+    const updatedProduct = await Product.findByIdAndUpdate(id, product, {
+      new: true,
+    });
+    if (!updatedProduct) {
+      throw new Error('Product not found.');
+    }
+    return updatedProduct;
   }
 
   async deleteOne(id: string) {

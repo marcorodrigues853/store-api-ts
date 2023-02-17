@@ -89,9 +89,15 @@ class ProductController {
 
   async update(req: Request, res: Response) {
     try {
+      const { id } = req.params;
+      const product = await ProductService.update(id, req.body);
+      res.status(201).json({ status: 'success', data: product });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        res.status(400).json(error.message);
+        res.status(500).json({
+          message: 'Failed to update product.',
+          error,
+        });
       }
     }
   }

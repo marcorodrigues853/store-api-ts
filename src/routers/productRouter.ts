@@ -24,6 +24,7 @@ router
 router
   .route('/products/:id')
   .get(ProductController.getOne)
-  .delete(ProductController.deleteOne);
+  .delete(ProductController.deleteOne)
+  .patch(ProductController.update);
 
 export default router;
