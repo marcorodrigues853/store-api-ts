@@ -5,7 +5,9 @@ import { Product } from '../models/ProductsModel';
 import authMiddleware from '../middleware/authMiddleware';
 
 import reviewRouter from '../routers/reviewRouter';
+import multer from 'multer';
 
+const upload = multer({ dest: 'static/products' });
 const router = Router();
 
 //* if has param in route this middleware will be executed else will be ignored
