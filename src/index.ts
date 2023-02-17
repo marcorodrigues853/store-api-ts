@@ -8,11 +8,12 @@ import cors from 'cors';
 import productRouter from './routers/productRouter';
 import authRouter from './routers/authRouter';
 import cookieParser from 'cookie-parser';
-import fileUpload from 'express-fileupload';
+
 import userRouter from './routers/userRouter';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import reviewRouter from './routers/reviewRouter';
+import authMiddleware from './middleware/authMiddleware';
 // import xss from 'xss-clean';
 // import helmet from 'helmet';
 
@@ -53,6 +54,7 @@ app.options('*', cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '20kb' })); //* limit the size of request
 app.use(express.static('static'));
+app.use(authMiddleware, express.static('static/users'));
 
 // Data sanitization against NOSQL query injection
 
@@ -68,7 +70,7 @@ app.use(
 );
 
 app.use(cookieParser());
-app.use(fileUpload());
+// app.use(fileUpload());
 
 app.use('/auth', authRouter);
 app.use('/api', productRouter);
