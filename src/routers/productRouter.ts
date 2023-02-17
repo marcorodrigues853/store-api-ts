@@ -2,12 +2,10 @@ import { Router } from 'express';
 import ProductController from '../controllers/ProductController';
 import factory from '../controllers/HandlerFactory';
 import { Product } from '../models/ProductsModel';
+import { resizeImages, uploadImages } from '../middleware/multerMiddleware';
+import reviewRouter from '../routers/reviewRouter';
 import authMiddleware from '../middleware/authMiddleware';
 
-import reviewRouter from '../routers/reviewRouter';
-import multer from 'multer';
-
-const upload = multer({ dest: 'static/products' });
 const router = Router();
 
 //* if has param in route this middleware will be executed else will be ignored
@@ -18,15 +16,13 @@ router.use('/products/:id/reviews', reviewRouter); //* mounting a router
 router
   .route('/products')
   .get(factory.getAll(Product))
-
   // .get(ProductController.getAll)
-  .post(authMiddleware, ProductController.create)
-  .put(ProductController.update);
+  .post(authMiddleware, uploadImages, resizeImages, ProductController.create);
 
 router
   .route('/products/:id')
   .get(ProductController.getOne)
-  .delete(ProductController.deleteOne)
-  .patch(ProductController.update);
+  .delete(authMiddleware, ProductController.deleteOne)
+  .patch(authMiddleware, uploadImages, resizeImages, ProductController.update);
 
 export default router;
