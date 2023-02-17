@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import ProductService from '../services/ProductService';
 import AppError from '../utilities/AppError';
-import { Product } from '../models/ProductsModel';
-import HandlerFactory from './HandlerFactory';
 
 class ProductController {
   // factory: any;
@@ -65,7 +63,9 @@ class ProductController {
       return res.status(200).json(product);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        res.status(400).json(error.message);
+        res
+          .status(400)
+          .json({ status: 'fail', code: error, message: error.message });
       }
     }
   }
