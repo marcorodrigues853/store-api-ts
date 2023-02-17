@@ -33,7 +33,6 @@ const ProductSchema = new mongoose.Schema(
       max: [5, 'Rating must be a number equal or below 5'],
       set: (value: number) => value.toFixed(1),
     },
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   },
   {
     toJSON: { virtuals: true },
@@ -42,14 +41,14 @@ const ProductSchema = new mongoose.Schema(
   },
 );
 
-ProductSchema.index({ price: 1, reviews: 1 });
-ProductSchema.index({ reviews: 1 });
+ProductSchema.index({ price: 1, ratingsAveraged: -1 });
+// ProductSchema.index({ reviews: 1 });
 
 //* Virtual populate to connect to fields
-// ProductSchema.virtual('reviews', {
-//   ref: 'Review',
-//   foreignField: 'product',
-//   localField: '_id',
-// });
+ProductSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'product',
+  localField: '_id',
+});
 
 export const Product = mongoose.model<IProduct>('Product', ProductSchema);
