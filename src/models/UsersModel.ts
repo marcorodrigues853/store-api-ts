@@ -45,7 +45,14 @@ const UserSchema = new mongoose.Schema(
       max: 30,
       trim: true,
     },
-    photo: { type: String },
+    photo: {
+      type: String,
+    },
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
+    },
     passwordChangedAt: { type: Date },
     passwordResetExpires: { type: Date },
     passwordResetToken: { type: String },
@@ -65,6 +72,12 @@ UserSchema.pre('save', function (next) {
   next();
 });
 
+UserSchema.pre(/^find/, function (next) {
+  // this points to the current query
+  this.find({ active: { $ne: false } });
+  next();
+});
+
 UserSchema.methods.hasCorrectPassword = async function (
   candidatePassword: string,
   userPassword: string,
@@ -73,12 +86,8 @@ UserSchema.methods.hasCorrectPassword = async function (
 };
 UserSchema.methods.createPasswordResetToken = async function () {
   const resetToken = randomUUID(); // uuid v4
-  // this.passwordResetToken = await hashSync(resetToken, 7); // TODO: need to be reviewed with Alex Ageev
   this.passwordResetToken = resetToken; // did once encrypted token has different when i use   hashsync
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10m
-  console.log('expires :', Date.now() + 10 * 60 * 1000);
-
-  console.log({ resetToken }, this.passwordResetToken);
   return resetToken;
 };
 
