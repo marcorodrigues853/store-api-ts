@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 
 import { validationResult } from 'express-validator';
 import Email from '../utilities/Email';
-import { compareSync, hashSync } from 'bcryptjs';
+import { hashSync } from 'bcryptjs';
 
 class AuthController {
   async register(req: Request, res: Response) {
@@ -185,11 +185,6 @@ class AuthController {
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     //* 1) Get user based on the token
     const { token } = req.params;
-    // const hashedToken = await bcrypt.hashSync(token, 7);
-
-    // const isTrue = compareSync(token, hashedToken);
-    // console.log('isTrue: ', isTrue);
-    // console.log('hashedToken', hashedToken);
 
     //* 2) if token has not expired, and there is user, set the new password
     const foundUser = await User.findOne({
