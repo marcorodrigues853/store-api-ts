@@ -17,11 +17,18 @@ const ProductSchema = new mongoose.Schema(
       min: 5,
       max: 200,
     },
-    price: { type: Number, required: [true, 'A price is required'],, trim: true, min: 1 },
-    taxID: { type: String, ref: 'Taxes' },
-    photos: {
-      thumbnails: { type: Array },
+    price: {
+      type: Number,
+      required: [true, 'A price is required'],
+      trim: true,
+      min: 1,
     },
+    taxID: { type: String, ref: 'Taxes' },
+    images: {
+      thumbnails: { type: Array },
+      big: { type: Array },
+    },
+
     ratingQuantity: {
       type: Number,
       default: 0,
