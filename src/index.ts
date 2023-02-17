@@ -52,6 +52,7 @@ app.options('*', cors());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '20kb' })); //* limit the size of request
+app.use(express.static('static'));
 
 // Data sanitization against NOSQL query injection
 
@@ -73,6 +74,10 @@ app.use('/auth', authRouter);
 app.use('/api', productRouter);
 app.use('/api', userRouter);
 app.use('/api/reviews', reviewRouter);
+
+app.get('*', (req: express.Request, res: express.Response) => {
+  res.status(404).send('Not found');
+});
 
 const connectToDb = async () => {
   try {
