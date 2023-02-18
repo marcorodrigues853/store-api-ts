@@ -1,11 +1,26 @@
-import { Request, Response } from 'express';
+import { Request, RequestHandler, Response } from 'express';
 import { User } from '../models/UsersModel';
 import UserService from '../services/UserService';
 import factory from './HandlerFactory';
 import AppError from '../utilities/AppError';
 import FactoryCRUDController from './FactoryCRUDController';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
 
 class UserController {
+  update(
+    uploadUserPhoto: RequestHandler<
+      ParamsDictionary,
+      any,
+      any,
+      ParsedQs,
+      Record<string, any>
+    >,
+    resizeUserPhoto: any,
+    update: any,
+  ) {
+    throw new Error('Method not implemented.');
+  }
   async getAll2() {
     console.log('entrou');
     await new FactoryCRUDController(User).getAll;
@@ -47,8 +62,19 @@ class UserController {
     }
   }
 
-  async updateOne() {
-    //
+  async updateOne(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = await UserService.update(id, req.body);
+      res.status(201).json({ status: 'success', data: user });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        res.status(500).json({
+          message: error.message,
+          error,
+        });
+      }
+    }
   }
 
   async deleteOne(req: Request, res: Response) {
