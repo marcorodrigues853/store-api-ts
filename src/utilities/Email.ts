@@ -17,12 +17,18 @@ class Email {
     });
   }
 
-  public async sendEmail(to: string, subject: string, text: string) {
+  public async sendEmail(to: string, subject: string, text: string, link: URL) {
     const mailOptions = {
       from: `"ALEX AGEEV" <${process.env.EMAIL_NO_REPLY}>`,
       to,
       subject,
       text,
+      html: `
+      <div>
+        <h1>Reset Password</h1>
+        <a href="${text}">${link}</a>
+      </div>
+    `,
     };
 
     return await this.transporter.sendMail(mailOptions);
