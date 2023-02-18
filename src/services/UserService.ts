@@ -5,13 +5,6 @@ import { hashSync } from 'bcryptjs';
 
 class UserService {
   async update(id: string, user: any) {
-    console.log(
-      'USER UPDATE',
-      user.password,
-      user.passwordConfirm,
-      !!user.password || !!user.passwordConfirm,
-    );
-
     if (!!user.password || !!user.passwordConfirm) {
       const { password, passwordConfirm } = user;
       if (password !== passwordConfirm) throw new Error('Password not coiso');

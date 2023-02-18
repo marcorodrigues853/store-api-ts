@@ -21,7 +21,7 @@ export const resizeUserPhoto = async (
   next: NextFunction,
 ) => {
   if (!req.file) return next();
-  const mimetype = 'png'; // to grant transparency
+  const mimetype = 'webp'; // to grant transparency
   const fileName = `${req.params.id}.${mimetype}`;
   req.body.photo = fileName;
 
@@ -35,7 +35,7 @@ export const resizeUserPhoto = async (
         blend: 'dest-in',
       },
     ])
-    .toFormat('png', { alphaQuality: 100 })
+    .webp({ quality: 90 })
     .toFile(`static/users/${fileName}`);
 
   next();
@@ -57,15 +57,18 @@ export const resizeImages = async (
   // to prevent event loop this will keep  a mp od promises
   await Promise.all(
     req.files.images.map(async (file: any, index: number) => {
-      const mimetype = file.mimetype.split('/')[1];
-      const fileName = `${req.params.id}-${++index}.${mimetype}`;
+      // const mimetype = file.mimetype.split('/')[1];
+
+      const fileName = `${req.params.id}-${++index}.webp`;
 
       await sharp(file.buffer)
         .resize({ width: 2000 })
+        .webp({ quality: 90 })
         .toFile(`static/products/${fileName}`);
 
       await sharp(file.buffer)
         .resize({ width: 200 })
+        .webp({ quality: 90 })
         .toFile(`static/thumbnails/${fileName}`);
 
       thumbnails.push(fileName);
