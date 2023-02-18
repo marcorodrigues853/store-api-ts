@@ -31,9 +31,8 @@ class AuthController {
       return res.status(201).json({ message: 'User created', ...createdUser });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.log(error.message);
+        res.status(500).json('Registration failed. Try again.');
       }
-      res.status(500).json('Registration failed. Try again.');
     }
   }
 

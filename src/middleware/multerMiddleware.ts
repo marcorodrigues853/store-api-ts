@@ -47,7 +47,7 @@ export const resizeImages = async (
   res: Response,
   next: NextFunction,
 ) => {
-  if (!req.files) return next();
+  if (!req.files.images) return next();
 
   const images: string[] = [];
   const thumbnails: string[] = [];
