@@ -54,7 +54,6 @@ app.options('*', cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '20kb' })); //* limit the size of request
 app.use(express.static('static'));
-app.use(authMiddleware, express.static('static/users'));
 
 // Data sanitization against NOSQL query injection
 
@@ -73,8 +72,8 @@ app.use(cookieParser());
 // app.use(fileUpload());
 
 app.use('/auth', authRouter);
-app.use('/api', productRouter);
-app.use('/api', userRouter);
+app.use('/api/products', productRouter);
+app.use('/api/users', userRouter);
 app.use('/api/reviews', reviewRouter);
 
 app.get('*', (req: express.Request, res: express.Response) => {
