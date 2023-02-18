@@ -71,9 +71,9 @@ class AuthController {
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.log(error.message);
-        return next(new AppError('Falhaste o login com sucesso', 500));
+        return next(new AppError(error.message, 500));
       }
-      res.status(500).json('Login failed');
+      res.status(500).json(error);
     }
   }
 
