@@ -4,14 +4,11 @@ import { IUser } from './../interface/IUser';
 import { compareSync, hashSync } from 'bcryptjs';
 import TokenService from './TokenService';
 import AppError from '../utilities/AppError';
+import { Hash } from 'crypto';
 
 class AuthService {
-  // async foundUser(user: IUser) {
-  //   return await User.findOne({ email: user.email });
-  // }
-
-  async isValidPassword(user: IUser, foundUser: IUser) {
-    return compareSync(user.password, foundUser.password);
+  async isValidPassword(password: string, newPassword: string) {
+    return compareSync(password, newPassword);
   }
 
   async login(email: string, password: string) {
@@ -21,7 +18,7 @@ class AuthService {
       throw new Error(`User ${email} not found`);
     }
     //* compare if passwords is the same
-    const hasValidPassword = compareSync(password, foundUser.password);
+    const hasValidPassword = this.isValidPassword(password, foundUser.password);
 
     if (!hasValidPassword) throw new Error('Password invalid');
 
@@ -34,16 +31,14 @@ class AuthService {
   }
 
   async register(newUser: IUser): Promise<any> {
-    const candidate = await User.findOne({ email: newUser.email });
+    const { email, password, passwordConfirm } = newUser;
+    const candidate = await User.findOne({ email });
     if (candidate) {
-      //TODO: need to check throw ApiError.BadRequest('User already exists.');
+      throw new AppError('User already exists.', 401);
     }
 
-    const hasConfirmedPassword =
-      JSON.stringify(newUser.password) ===
-      JSON.stringify(newUser.passwordConfirm);
-
-    if (!hasConfirmedPassword) throw new Error('Password not coiso');
+    const hasConfirmedPassword = password === passwordConfirm;
+    if (!hasConfirmedPassword) throw new AppError('Password not match.', 422);
 
     const hashPassword = hashSync(newUser.password, 7);
 
@@ -96,10 +91,6 @@ class AuthService {
       ...tokens,
       foundUser,
     };
-  }
-
-  async forgotPassword(refreshToken: string) {
-    //
   }
 }
 

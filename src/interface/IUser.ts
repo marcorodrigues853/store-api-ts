@@ -6,7 +6,7 @@ export interface IUser {
   lastName: string;
   email: string;
   password: string;
-  passwordConfirm?: string;
+  passwordConfirm: string;
   phone: string;
   isActive: boolean;
   photo: string;

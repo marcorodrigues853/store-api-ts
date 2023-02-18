@@ -9,7 +9,7 @@ import Email from '../utilities/Email';
 import { hashSync } from 'bcryptjs';
 
 class AuthController {
-  async register(req: Request, res: Response) {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req);
 
@@ -31,8 +31,10 @@ class AuthController {
       return res.status(201).json({ message: 'User created', ...createdUser });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        res.status(500).json('Registration failed. Try again.');
+        console.log(error.message);
+        return res.status(500).json(error.message);
       }
+      res.status(500).json('Registration failed. Try again.');
     }
   }
 
