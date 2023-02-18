@@ -6,3 +6,4 @@ package-lock.json
 
 /static/products/*
 /static/thumbnails/*
+/static/users/*
