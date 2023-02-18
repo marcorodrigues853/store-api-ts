@@ -21,12 +21,21 @@ export const resizeUserPhoto = async (
   next: NextFunction,
 ) => {
   if (!req.file) return next();
-  const mimetype = req.file.mimetype.split('/')[1];
+  const mimetype = 'png'; // to grant transparency
   const fileName = `${req.params.id}.${mimetype}`;
   req.body.photo = fileName;
 
   await sharp(req.file.buffer)
-    .resize({ width: 2000 })
+    .resize(200, 200)
+    .composite([
+      {
+        input: Buffer.from(
+          `<svg><rect x="0" y="0" width="200" height="200" rx="100" ry="100"/></svg>`,
+        ),
+        blend: 'dest-in',
+      },
+    ])
+    .toFormat('png', { alphaQuality: 100 })
     .toFile(`static/users/${fileName}`);
 
   next();
