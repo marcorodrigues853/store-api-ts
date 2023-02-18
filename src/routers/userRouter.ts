@@ -8,21 +8,15 @@ import {
 
 const router = Router();
 
-router
-  .route('/')
-  .get(authMiddleware, UserController.getAll)
-  .put(authMiddleware, UserController.updateOne);
+router.use(authMiddleware);
+
+router.route('/').get(UserController.getAll).put(UserController.updateOne);
 
 router
   .route('/:id')
-  .get(authMiddleware, UserController.getOne)
-  .patch(
-    authMiddleware,
-    uploadUserPhoto,
-    resizeUserPhoto,
-    UserController.updateOne,
-  )
-  .delete(authMiddleware, UserController.deleteOne);
+  .get(UserController.getOne)
+  .patch(uploadUserPhoto, resizeUserPhoto, UserController.updateOne)
+  .delete(UserController.deleteOne);
 
 // router.patch(
 //   '/updateMyPassword',
