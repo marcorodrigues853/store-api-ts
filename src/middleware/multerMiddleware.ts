@@ -14,9 +14,25 @@ const upload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
 });
+export const uploadUserPhoto = upload.single('photo');
+export const resizeUserPhoto = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!req.file) return next();
+  const mimetype = req.file.mimetype.split('/')[1];
+  const fileName = `${req.params.id}.${mimetype}`;
+  req.body.photo = fileName;
+
+  await sharp(req.file.buffer)
+    .resize({ width: 2000 })
+    .toFile(`static/users/${fileName}`);
+
+  next();
+};
 
 export const uploadImages = upload.fields([{ name: 'images', maxCount: 5 }]);
-
 export const resizeImages = async (
   req: any,
   res: Response,
@@ -48,9 +64,7 @@ export const resizeImages = async (
     }),
   );
 
-  req.body.images = images;
-  req.body.thumbnails = thumbnails;
+  req.body.images = { big: images, thumbnails };
 
-  // req.body.images = req.files.images;
   next();
 };
