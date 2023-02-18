@@ -25,8 +25,8 @@ const ProductSchema = new mongoose.Schema(
     },
     taxID: { type: String, ref: 'Taxes' },
     images: {
-      thumbnails: { type: Array },
-      big: { type: Array },
+      thumbnails: { type: Array, required: true, max: 2 },
+      big: { type: Array, required: true, max: 2 },
     },
 
     ratingQuantity: {
