@@ -9,4 +9,9 @@ router
   .get(ReviewController.getAll)
   .post(authMiddleware, ReviewController.createOne);
 
+router
+  .route('/:id')
+  .patch(ReviewController.updateOne)
+  .delete(ReviewController.deleteOne);
+
 export default router;
