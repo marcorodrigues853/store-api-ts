@@ -80,7 +80,7 @@ class AuthController {
   async logout(req: Request, res: Response) {
     try {
       if (!req.cookies.refreshToken)
-        res.status(400).json({ message: 'Refresh token not found' }); // TODO: add class
+        return res.status(400).json({ message: 'Refresh token not found' }); // TODO: add class
 
       const { refreshToken } = req.cookies;
       const token = await AuthService.logout(refreshToken);
@@ -136,7 +136,6 @@ class AuthController {
    */
   async forgotPassword(req: Request, res: Response, next: NextFunction) {
     // 1) get user of posted email
-    // const user = await UserService.getOne(); // TODO: review with ALEX service once id  vs email
     const { email } = req.body;
     const foundUser = await User.findOne({ email });
 
@@ -149,16 +148,17 @@ class AuthController {
       await foundUser?.save({ validateBeforeSave: false }); // to avoid  validators
 
       // 3) Send it to user's email
-      const resetURL = `${req.protocol}://${req.get(
-        'host',
-      )}/auth/resetPassword/${resetToken}`;
+      const resetURL = new URL(
+        `${req.protocol}://${req.get('host')}/auth/resetPassword/${resetToken}`,
+      );
 
-      const to = 'marcoaurelio853@gmail.com';
+      // TODO: need to pass to  process.env
+
+      const to = email;
       const subject = 'Tests Alex project';
-      const message = `Link to reset password ${resetURL}`;
+      const message = `Link to reset password`;
 
-      await Email.sendEmail(to, subject, message);
-      console.log('enbiou mail');
+      await Email.sendEmail(to, subject, message, resetURL);
 
       res.status(200).json({
         status: 'success',
@@ -191,9 +191,9 @@ class AuthController {
       passwordResetToken: token,
       passwordResetExpires: { $gt: Date.now() },
     });
-
+    console.log('foundUser', foundUser);
     if (!foundUser)
-      res.status(400).json({
+      return res.status(400).json({
         status: 'Bad Request',
         message: 'Token is invalid or not found',
       });
@@ -201,20 +201,17 @@ class AuthController {
 
     //* 3) Update changePasswordAt property for the user
 
-    let authToken;
-    if (foundUser) {
-      const hashedPassword = hashSync(req.body.password);
-      foundUser.password = hashedPassword;
-      foundUser.passwordConfirm = hashedPassword;
-      foundUser.passwordResetExpires = undefined;
-      foundUser.passwordResetToken = undefined;
-      await foundUser.save();
+    const hashedPassword = hashSync(req.body.password);
+    foundUser.password = hashedPassword;
+    foundUser.passwordConfirm = hashedPassword;
+    foundUser.passwordResetExpires = undefined;
+    foundUser.passwordResetToken = undefined;
+    await foundUser.save();
 
-      //* 4) Log the user in, send JWT to the client
-      const { email, password } = foundUser;
-      console.log(email, password, req.body.password);
-      authToken = await AuthService.login(email, req.body.password);
-    }
+    //* 4) Log the user in, send JWT to the client
+    const { email, password } = foundUser;
+    console.log(email, password, req.body.password);
+    const authToken = await AuthService.login(email, req.body.password);
 
     return res.status(200).json({
       status: 200,

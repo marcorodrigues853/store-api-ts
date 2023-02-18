@@ -54,6 +54,7 @@ export const resizeImages = async (
   const images: string[] = [];
   const thumbnails: string[] = [];
 
+  if (!req.files) next();
   // to prevent event loop this will keep  a mp od promises
   await Promise.all(
     req.files.images.map(async (file: any, index: number) => {
