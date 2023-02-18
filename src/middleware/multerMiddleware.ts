@@ -47,15 +47,12 @@ export const resizeImages = async (
   res: Response,
   next: NextFunction,
 ) => {
-  // console.log('files', req.files);
-
-  if (!req.files) next();
+  if (!req.files) return next();
 
   const images: string[] = [];
   const thumbnails: string[] = [];
 
-  if (!req.files) next();
-  // to prevent event loop this will keep  a mp od promises
+  // to prevent event loop this will keep  a map od promises
   await Promise.all(
     req.files.images.map(async (file: any, index: number) => {
       // const mimetype = file.mimetype.split('/')[1];
@@ -78,6 +75,5 @@ export const resizeImages = async (
   );
 
   req.body.images = { big: images, thumbnails };
-
   next();
 };
