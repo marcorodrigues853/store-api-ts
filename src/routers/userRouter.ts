@@ -1,25 +1,33 @@
 import { Router } from 'express';
 import UserController from '../controllers/UserController';
 import authMiddleware from '../middleware/authMiddleware';
+import {
+  resizeUserPhoto,
+  uploadUserPhoto,
+} from '../middleware/multerMiddleware';
 
 const router = Router();
 
 router
-  .route('/users')
+  .route('/')
   .get(authMiddleware, UserController.getAll)
-  .put(UserController.updateOne);
+  .put(authMiddleware, UserController.updateOne);
 
 router
-  .route('/users/:id')
+  .route('/:id')
   .get(authMiddleware, UserController.getOne)
-  .delete(UserController.deleteOne);
+  .patch(
+    authMiddleware,
+    uploadUserPhoto,
+    resizeUserPhoto,
+    UserController.updateOne,
+  )
+  .delete(authMiddleware, UserController.deleteOne);
 
 // router.patch(
 //   '/updateMyPassword',
 //   authMiddleware,
 //   UserController.updatePassword,
 // );
-
-router.route('/usersTeste').get(UserController.getAll2);
 
 export default router;

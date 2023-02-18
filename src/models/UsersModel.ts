@@ -59,7 +59,7 @@ const UserSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-// console.log('SCHEMA1', UserSchema);
+
 UserSchema.pre(/^find/, function (next) {
   // this points to the current query
   this.find({ active: { $ne: false } });
@@ -91,7 +91,6 @@ UserSchema.methods.createPasswordResetToken = async function () {
   return resetToken;
 };
 
-// console.log('SCHEMA2', UserSchema.methods.createPasswordResetToken);
 export const User = mongoose.model<IUser & mongoose.Document>(
   'User',
   UserSchema,
