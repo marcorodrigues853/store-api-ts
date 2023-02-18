@@ -5,18 +5,24 @@ import {
   resizeUserPhoto,
   uploadUserPhoto,
 } from '../middleware/multerMiddleware';
+import roleMiddleware from '../middleware/roleMiddleware';
 
 const router = Router();
 
 router.use(authMiddleware);
 
-router.route('/').get(UserController.getAll).put(UserController.updateOne);
+router.route('/').get(roleMiddleware(['ADMIN']), UserController.getAll);
 
 router
   .route('/:id')
   .get(UserController.getOne)
-  .patch(uploadUserPhoto, resizeUserPhoto, UserController.updateOne)
-  .delete(UserController.deleteOne);
+  .patch(
+    roleMiddleware(['ADMIN']),
+    uploadUserPhoto,
+    resizeUserPhoto,
+    UserController.updateOne,
+  )
+  .delete(roleMiddleware(['ADMIN']), UserController.deleteOne);
 
 // router.patch(
 //   '/updateMyPassword',

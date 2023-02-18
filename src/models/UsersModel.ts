@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { hashSync, compareSync } from 'bcryptjs';
+import { compareSync } from 'bcryptjs';
 import { IUser } from './../interface/IUser';
 import mongoose from 'mongoose';
 
@@ -38,6 +38,7 @@ const UserSchema = new mongoose.Schema(
       min: 8,
       max: 80,
     },
+    roles: [{ type: String, ref: 'Role', default: 'USER' }],
     phone: {
       type: Number,
       required: false,
@@ -47,8 +48,9 @@ const UserSchema = new mongoose.Schema(
     },
     photo: {
       type: String,
+      default: 'not-found.jpg',
     },
-    active: {
+    isActive: {
       type: Boolean,
       default: true,
       select: false,
@@ -62,19 +64,13 @@ const UserSchema = new mongoose.Schema(
 
 UserSchema.pre(/^find/, function (next) {
   // this points to the current query
-  this.find({ active: { $ne: false } });
+  this.find({ isActive: { $ne: false } });
   next();
 });
 
 UserSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) next();
   this.passwordChangedAt = new Date(Date.now()); //* to force TS once he recognize Date.now as a
-  next();
-});
-
-UserSchema.pre(/^find/, function (next) {
-  // this points to the current query
-  this.find({ active: { $ne: false } });
   next();
 });
 
