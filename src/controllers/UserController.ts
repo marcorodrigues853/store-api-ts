@@ -1,11 +1,9 @@
-import { Request, RequestHandler, Response } from 'express';
+import { Request, Response } from 'express';
 import { User } from '../models/UsersModel';
 import UserService from '../services/UserService';
 import factory from './HandlerFactory';
 import AppError from '../utilities/AppError';
 import FactoryCRUDController from './FactoryCRUDController';
-import { ParamsDictionary } from 'express-serve-static-core';
-import { ParsedQs } from 'qs';
 
 class UserController {
   async getAll2() {
