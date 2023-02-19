@@ -53,7 +53,6 @@ class AuthController {
       return res.json({ message: 'Login success', data: foundUser });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.log(error.message);
         return next(new AppError(error.message, 400));
       }
     }

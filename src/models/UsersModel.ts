@@ -52,7 +52,7 @@ const UserSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      default: true,
+      default: false,
       select: false,
     },
     passwordChangedAt: { type: Date },
@@ -62,11 +62,11 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-UserSchema.pre(/^find/, function (next) {
-  // this points to the current query
-  this.find({ isActive: { $ne: false } });
-  next();
-});
+// UserSchema.pre(/^find/, function (next) {
+//   // this points to the current query
+//   this.find({ isActive: { $ne: false } });
+//   next();
+// });
 
 UserSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) next();
