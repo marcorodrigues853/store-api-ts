@@ -1,15 +1,44 @@
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-dotenv.config();
+import pug from 'pug';
+import { convert } from 'html-to-text';
+import { IUser } from '../interface/IUser';
 
-class Email {
-  private transporter: nodemailer.Transporter;
+interface IMailOptions {
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+}
 
-  constructor() {
-    this.transporter = nodemailer.createTransport({
+class Email2 {
+  to: string;
+  firstName: string;
+  url: string;
+  from: string;
+
+  constructor(user: IUser, url = '') {
+    this.to = user.email;
+    this.firstName = user.firstName;
+    this.url = url;
+    this.from = `Jonas Schmedtmann <${process.env.EMAIL_FROM}>`;
+  }
+
+  newTransport() {
+    if (process.env.NODE_ENV === 'production') {
+      // Sendgrid
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_PASSWORD,
+        },
+      });
+    }
+
+    return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: false,
+      port: Number(process.env.EMAIL_PORT),
       auth: {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
@@ -17,36 +46,38 @@ class Email {
     });
   }
 
-  public async sendEmail(to: string, subject: string, text: string, link: URL) {
-    const mailOptions = {
-      from: `"ALEX AGEEV" <${process.env.EMAIL_NO_REPLY}>`,
-      to,
+  // Send the actual email
+  async send(template: string, subject: string) {
+    // 1) Render HTML based on a pug template
+    const html = pug.renderFile(`${__dirname}/email/${template}.pug`, {
+      firstName: this.firstName,
+      url: this.url,
       subject,
-      text,
-      html: `
-      <div>
-        <h1>Reset Password</h1>
-        <a href="${text}">${link}</a>
-      </div>
-    `,
+    });
+
+    // 2) Define email options
+    const mailOptions: IMailOptions = {
+      from: this.from,
+      to: this.to,
+      subject,
+      html,
+      text: convert(html),
     };
 
-    return await this.transporter.sendMail(mailOptions);
+    // 3) Create a transport and send email
+    await this.newTransport().sendMail(mailOptions);
   }
 
-  public send(template: string, subject: string) {
-    //
-    console.log(template, subject);
+  async sendWelcome() {
+    await this.send('welcome', 'Welcome to the Sharic Inc!');
   }
-  public async sendWelcome() {
-    await this.send('welcome', 'Welcome to the  Family!');
-  }
+
   async sendPasswordReset() {
     await this.send(
-      'Reset',
-      'Your password reset token (valid for only 60 minutes)',
+      'passwordReset',
+      'Your password reset token (valid for only 10 minutes)',
     );
   }
 }
 
-export default new Email();
+export default Email2;

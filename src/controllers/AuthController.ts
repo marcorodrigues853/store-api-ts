@@ -5,9 +5,9 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { validationResult } from 'express-validator';
-import Email from '../utilities/Email';
+
 import { hashSync } from 'bcryptjs';
-import Email2 from '../utilities/Email2';
+import Email from '../utilities/Email';
 
 class AuthController {
   async register(req: Request, res: Response) {
@@ -132,7 +132,7 @@ class AuthController {
 
       // 3) Send it to user's email
       const resetURL = `${process.env.API_URL}/auth/resetPassword/${resetToken}`;
-      await new Email2(foundUser, resetURL).sendPasswordReset();
+      await new Email(foundUser, resetURL).sendPasswordReset();
 
       res.status(200).json({
         status: 'success',
