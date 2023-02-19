@@ -192,7 +192,7 @@ class AuthController {
       passwordResetToken: token,
       passwordResetExpires: { $gt: Date.now() },
     });
-    console.log('foundUser', foundUser);
+
     if (!foundUser)
       return res.status(400).json({
         status: 'Bad Request',
@@ -201,6 +201,11 @@ class AuthController {
     //return next(new AppError('Token is invalid or has expired', 400));
 
     //* 3) Update changePasswordAt property for the user
+
+    const { newPassword, newPasswordConfirm } = req.body;
+
+    const hasConfirmedPassword = newPassword === newPasswordConfirm;
+    if (!hasConfirmedPassword) throw new AppError('Password not match.', 422);
 
     const hashedPassword = hashSync(req.body.password);
     foundUser.password = hashedPassword;
