@@ -5,8 +5,24 @@ import { compareSync, hashSync } from 'bcryptjs';
 import TokenService from './TokenService';
 import AppError from '../utilities/AppError';
 import Email from '../utilities/Email';
+import UserService from './UserService';
 
 class AuthService {
+  async activateAccount(token: string) {
+    try {
+      const user = TokenService.validateRefreshToken(token);
+      console.log('validated', user);
+      const updatedUser = await UserService.update(user.id, { isActive: true });
+      const { deletedCount } = await TokenService.removeToken(token);
+      console.log('deletedCount', deletedCount);
+      if (!deletedCount)
+        throw new AppError('Invalid Token of activation.', 401);
+      return updatedUser;
+    } catch (error) {
+      console.log(error);
+      throw new AppError('Invalid Token of activation.', 401);
+    }
+  }
   async isValidPassword(password: string, newPassword: string) {
     return compareSync(password, newPassword);
   }
@@ -15,9 +31,16 @@ class AuthService {
     const foundUser = await User.findOne({ email });
 
     if (!foundUser) {
-      throw new Error(`User ${email} not found`);
+      throw new Error(`User ${email} not found!`);
+    }
+
+    console.log('!foundUser.isActive', !foundUser.isActive);
+    console.log('!foundUser.isActive', foundUser);
+    if (!foundUser.isActive) {
+      throw new Error(`User ${email} active, consult your mail!`);
     }
     //* compare if passwords is the same
+
     const hasValidPassword = this.isValidPassword(password, foundUser.password);
 
     if (!hasValidPassword) throw new Error('Password invalid');
@@ -55,15 +78,18 @@ class AuthService {
       });
 
       const createdUser = await user.save();
-      const tokens = TokenService.generateTokens(createdUser);
-
-      await new Email(newUser).sendWelcome();
-
+      const tokens = TokenService.generateActivationAccountToken(
+        createdUser._id,
+      );
       await TokenService.saveToken(
         String(createdUser._id),
         tokens.refreshToken,
       );
-      return { ...tokens, createdUser };
+
+      const activationLink = `${process.env.API_URL}/auth/activate/${tokens.refreshToken}`;
+      await new Email(newUser, activationLink).sendWelcome();
+
+      return { createdUser };
     } else {
       console.log('Role not found');
     }
@@ -86,7 +112,6 @@ class AuthService {
     }
 
     const foundUser = await User.findById(userData?.id);
-    console.log(foundUser);
     const tokens = TokenService.generateTokens(foundUser);
     await TokenService.saveToken(String(userData?.id), tokens.refreshToken);
 

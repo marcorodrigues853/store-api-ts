@@ -35,14 +35,14 @@ class TokenService {
     };
   }
 
-  generateActivationAccountToken(email: string) {
-    const payload = { email };
-    const token = jwt.sign(
+  generateActivationAccountToken(id: string) {
+    const payload = { id };
+    const refreshToken = jwt.sign(
       payload,
       String(process.env.JWT_REFRESH_SECRET_KEY),
       { expiresIn: '60m' },
     );
-    return token;
+    return { refreshToken };
   }
 
   async saveToken(userId: string, refreshToken: string) {
@@ -72,7 +72,6 @@ class TokenService {
         token,
         String(process.env.JWT_ACCESS_SECRET_KEY),
       );
-      console.log('userData validateAccessToken', userData);
       return userData as TokenPayload;
     } catch (e) {
       throw e;
