@@ -13,7 +13,7 @@ import userRouter from './routers/userRouter';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import reviewRouter from './routers/reviewRouter';
-import authMiddleware from './middleware/authMiddleware';
+
 // import xss from 'xss-clean';
 // import helmet from 'helmet';
 
