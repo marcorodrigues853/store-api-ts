@@ -1,0 +1,1193 @@
+{
+	"info": {
+		"_postman_id": "b040a6de-aca0-4057-8aa9-b571adba9593",
+		"name": "STORE API TS NODEJS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16787920"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().data.accessToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"marco22@teste.com\",\n    \"password\": \"teste\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/login?email=marco22@teste.com&password=teste",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "marco22@teste.com"
+								},
+								{
+									"key": "password",
+									"value": "teste"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "recovery password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"marco100@teste.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/forgotPassword",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"forgotPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().data.accessToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"password\": \"newpassword\",\n\t\"passwordConfirm\": \"newpassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/resetPassword/59863fd6-d0df-4c99-a084-ae79980d836f",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"resetPassword",
+								"59863fd6-d0df-4c99-a084-ae79980d836f"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "teste",
+									"disabled": true
+								},
+								{
+									"key": "passwprd",
+									"value": "teste",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().accessToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"teste4@teste.com\",\n    \"password\": \"teste\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/refresh",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.unset(\"jwt\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/auth/logout",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().accessToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Miguel\",\n    \"lastName\": \"NAbo\",\n    \"email\":\"miguel232222333222221321322@teste.com\",\n    \"password\": \"teste\",\n    \"passwordConfirm\":\"teste\",\n    \"roles\":\"bastard\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/register?firstName=ze&lastName=to&email=teste7@teste.com&password=teste&passwordConfirm=teste",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "ze"
+								},
+								{
+									"key": "lastName",
+									"value": "to"
+								},
+								{
+									"key": "email",
+									"value": "teste7@teste.com"
+								},
+								{
+									"key": "password",
+									"value": "teste"
+								},
+								{
+									"key": "passwordConfirm",
+									"value": "teste"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product Reviews",
+			"item": [
+				{
+					"name": "get All Review Product",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/products/63ef6a50e86e9f63f9e02e16/reviews",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"63ef6a50e86e9f63f9e02e16",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"review\": \"nabo é o que és\",\n\"rating\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/products/63ef6a50e86e9f63f9e02e16/reviews",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"63ef6a50e86e9f63f9e02e16",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "ze 232",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "teste",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "33",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/Users/marcorodrigues/Desktop/new-tour-2.jpg"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/Users/marcorodrigues/Desktop/product15.jpg"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/Users/marcorodrigues/Desktop/new-tour-1.jpg"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/Users/marcorodrigues/Desktop/new-tour-4.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/api/products",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "price",
+									"value": "2222",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/Users/marcorodrigues/Desktop/new-tour-4.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/api/products/63ef6a74e86e9f63f9e02e22",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"63ef6a74e86e9f63f9e02e22"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZTEzYzIyYWIzOGNiNjMyZjM5MGM2OSIsImlhdCI6MTY3NTcxMzU0MywiZXhwIjoxNjc3MDA5NTQzfQ.N4TbDGzFqgzsXMNh1yUfZYUtceOkUEgqPPZ9cSqAX-k",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/products/63e0d897cf9d0d86796d36ab",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"63e0d897cf9d0d86796d36ab"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get All",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZTEzYzIyYWIzOGNiNjMyZjM5MGM2OSIsImlhdCI6MTY3NTcxMzU0MywiZXhwIjoxNjc3MDA5NTQzfQ.N4TbDGzFqgzsXMNh1yUfZYUtceOkUEgqPPZ9cSqAX-k",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/products",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"products"
+							],
+							"query": [
+								{
+									"key": "price",
+									"value": "100",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "BBBB",
+									"disabled": true
+								},
+								{
+									"key": "price[lte]",
+									"value": "450",
+									"description": "accept LTE LT ",
+									"disabled": true
+								},
+								{
+									"key": "price[gt]",
+									"value": "100",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"description": "number of Page",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "2",
+									"description": "limit of results per page",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "name, price",
+									"description": "sort multiple fields",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "name,price,-_id",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get One",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/products/63ef6a54e86e9f63f9e02e18",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"63ef6a54e86e9f63f9e02e18"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "get All",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZTEzYzIyYWIzOGNiNjMyZjM5MGM2OSIsImlhdCI6MTY3NTcxMzU0MywiZXhwIjoxNjc3MDA5NTQzfQ.N4TbDGzFqgzsXMNh1yUfZYUtceOkUEgqPPZ9cSqAX-k",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/users?sort=-name",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "price",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "BBBB",
+									"disabled": true
+								},
+								{
+									"key": "price[lte]",
+									"value": "4500",
+									"description": "accept LTE LT ",
+									"disabled": true
+								},
+								{
+									"key": "price[gt]",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "number of Page",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"description": "limit of results per page",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "-name",
+									"description": "sort multiple fields"
+								},
+								{
+									"key": "fields",
+									"value": "+password, email, +passwordConfirm",
+									"description": "select or  ",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get All TESTE",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZTEzYzIyYWIzOGNiNjMyZjM5MGM2OSIsImlhdCI6MTY3NTcxMzU0MywiZXhwIjoxNjc3MDA5NTQzfQ.N4TbDGzFqgzsXMNh1yUfZYUtceOkUEgqPPZ9cSqAX-k",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/usersTeste",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"usersTeste"
+							],
+							"query": [
+								{
+									"key": "price",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "BBBB",
+									"disabled": true
+								},
+								{
+									"key": "price[lte]",
+									"value": "4500",
+									"description": "accept LTE LT ",
+									"disabled": true
+								},
+								{
+									"key": "price[gt]",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "number of Page",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"description": "limit of results per page",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "-name",
+									"description": "sort multiple fields",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "+password, email, +passwordConfirm",
+									"description": "select or  ",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZTEzYzIyYWIzOGNiNjMyZjM5MGM2OSIsImlhdCI6MTY3NTcxMzU0MywiZXhwIjoxNjc3MDA5NTQzfQ.N4TbDGzFqgzsXMNh1yUfZYUtceOkUEgqPPZ9cSqAX-k",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/users/63f0fac3174a45c0b6dc4f23",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"63f0fac3174a45c0b6dc4f23"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get One",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/users/63ef6a8ee86e9f63f9e02e2d",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"63ef6a8ee86e9f63f9e02e2d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "firstName",
+									"value": "Marco",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "teste3",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "passwordConfirm",
+									"value": "teste3",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/Users/marcorodrigues/Downloads/hannah-busing-ff5K3-kYPHA-unsplash.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/api/users/63f101b2af4c22941f6b1505",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"63f101b2af4c22941f6b1505"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/reviews/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"reviews",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"review\": \"TESTES sdfdsfsdfds\",\n\"rating\":5,\n\"product\": \"63df9f65346deb70726bd9a8\",\n\"user\": \"63e7fd095928170fd3dd1a7b\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/reviews",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZTEzYzIyYWIzOGNiNjMyZjM5MGM2OSIsImlhdCI6MTY3NTcxMzU0MywiZXhwIjoxNjc3MDA5NTQzfQ.N4TbDGzFqgzsXMNh1yUfZYUtceOkUEgqPPZ9cSqAX-k",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/reviews/63ef639341efd2c1ed24691a",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"reviews",
+								"63ef639341efd2c1ed24691a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"review\": \"TESTES 4444\",\n\"rating\":5,\n\"product\": \"63df9f65346deb70726bd9a8\",\n\"user\": \"63e7fd095928170fd3dd1a7b\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/reviews",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
