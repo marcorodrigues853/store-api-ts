@@ -31,12 +31,15 @@ const UserSchema = new mongoose.Schema(
       required: [true, 'A user must have an password'],
       min: 8,
       max: 80,
+      trim: true,
     },
     passwordConfirm: {
       type: String,
       required: [true, 'A user must confirm your password'],
       min: 8,
       max: 80,
+      trim: true,
+      select: false,
     },
     roles: [{ type: String, ref: 'Role', default: 'USER' }],
     phone: {
@@ -49,11 +52,11 @@ const UserSchema = new mongoose.Schema(
     photo: {
       type: String,
       default: 'not-found.jpg',
+      trim: true,
     },
     isActive: {
       type: Boolean,
       default: false,
-      select: false,
     },
     passwordChangedAt: { type: Date },
     passwordResetExpires: { type: Date },
