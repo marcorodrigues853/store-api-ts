@@ -5,6 +5,7 @@ import { compareSync, hashSync } from 'bcryptjs';
 import TokenService from './TokenService';
 import AppError from '../utilities/AppError';
 import { Hash } from 'crypto';
+import Email2 from '../utilities/Email2';
 
 class AuthService {
   async isValidPassword(password: string, newPassword: string) {
@@ -56,6 +57,9 @@ class AuthService {
 
       const createdUser = await user.save();
       const tokens = TokenService.generateTokens(createdUser);
+
+      await new Email2(newUser).sendWelcome();
+
       await TokenService.saveToken(
         String(createdUser._id),
         tokens.refreshToken,

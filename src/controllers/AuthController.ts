@@ -7,9 +7,10 @@ import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import Email from '../utilities/Email';
 import { hashSync } from 'bcryptjs';
+import Email2 from '../utilities/Email2';
 
 class AuthController {
-  async register(req: Request, res: Response, next: NextFunction) {
+  async register(req: Request, res: Response) {
     try {
       const errors = validationResult(req);
 
@@ -37,26 +38,6 @@ class AuthController {
       res.status(500).json('Registration failed. Try again.');
     }
   }
-
-  // async login(req: express.Request, res: express.Response) {
-  //   try {
-  //     console.log('AKI: ', req.body);
-  //     const foundUser: any = await AuthService.foundUser(req.body);
-
-  //     if (!foundUser) new AppError(`User email not found`, 500);
-
-  //     const isValidPassword = await AuthService.isValidPassword(
-  //       req.body,
-  //       foundUser,
-  //     );
-
-  //     if (!isValidPassword) new AppError('Password invalid', 500);
-  //     const token = this.generateAccessToken(foundUser._id, foundUser.roles);
-  //     return res.json({ token });
-  //   } catch (error: unknown) {
-  //     if (error instanceof Error) new AppError(error.message, 500);
-  //   }
-  // }
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
@@ -138,28 +119,20 @@ class AuthController {
   async forgotPassword(req: Request, res: Response, next: NextFunction) {
     // 1) get user of posted email
     const { email } = req.body;
+    if (!email) next(new AppError('Email is invalid.', 404));
+
+    // TODO: need to do a service
     const foundUser = await User.findOne({ email });
 
-    if (!foundUser) next(new AppError('Email is invalid.', 404));
-
-    // 2) Generate the random reset token
-    const resetToken = await foundUser?.createPasswordResetToken();
-
     try {
-      await foundUser?.save({ validateBeforeSave: false }); // to avoid  validators
+      if (!foundUser) return next(new AppError('Email is invalid.', 404));
+      // 2) Generate the random reset token
+      const resetToken = await foundUser?.createPasswordResetToken();
+      await foundUser.save({ validateBeforeSave: false }); // to avoid  validators
 
       // 3) Send it to user's email
-      const resetURL = new URL(
-        `${req.protocol}://${req.get('host')}/auth/resetPassword/${resetToken}`,
-      );
-
-      // TODO: need to pass to  process.env
-
-      const to = email;
-      const subject = 'Tests Alex project';
-      const message = `Link to reset password`;
-
-      await Email.sendEmail(to, subject, message, resetURL);
+      const resetURL = `${process.env.API_URL}/auth/resetPassword/${resetToken}`;
+      await new Email2(foundUser, resetURL).sendPasswordReset();
 
       res.status(200).json({
         status: 'success',
@@ -171,7 +144,7 @@ class AuthController {
       if (foundUser) {
         foundUser.passwordResetToken = undefined;
         foundUser.passwordResetExpires = undefined;
-        await foundUser?.save({ validateBeforeSave: false });
+        await foundUser.save({ validateBeforeSave: false });
       }
 
       return next(
