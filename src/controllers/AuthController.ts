@@ -8,7 +8,6 @@ import { validationResult } from 'express-validator';
 
 import { hashSync } from 'bcryptjs';
 import Email from '../utilities/Email';
-import UserService from '../services/UserService';
 
 class AuthController {
   async register(req: Request, res: Response) {
@@ -33,7 +32,6 @@ class AuthController {
       return res.status(201).json({ message: 'User created', ...createdUser });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.log(error.message);
         return res.status(500).json(error.message);
       }
       res.status(500).json('Registration failed. Try again.');
@@ -187,8 +185,7 @@ class AuthController {
     await foundUser.save();
 
     //* 4) Log the user in, send JWT to the client
-    const { email, password } = foundUser;
-    console.log(email, password, req.body.password);
+    const { email } = foundUser;
     const authToken = await AuthService.login(email, req.body.password);
 
     return res.status(200).json({
@@ -200,12 +197,11 @@ class AuthController {
 
   async activateAccount(req: Request, res: Response, next: NextFunction) {
     try {
-      const { token } = req.params;
-
-      const foundUser = await AuthService.activateAccount(token);
-
-      console.log('FOUNDUSER', foundUser);
-      res.status(200).json({ message: 'Account activated' });
+      const { token: refreshToken } = req.params;
+      await AuthService.activateAccount(refreshToken);
+      res.status(200).json({
+        message: 'Account activated',
+      });
     } catch (error) {
       next(new AppError('Invalid or expired token', 400));
     }

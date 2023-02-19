@@ -85,7 +85,6 @@ class UserController {
       const deleted = await UserService.deleteOne(id);
       if (!deleted) new AppError('já foste oh Candido', 204);
 
-      console.log('deleted: ', deleted);
       return res.status(201).json(deleted);
     } catch (error: unknown) {
       if (error instanceof Error) {
