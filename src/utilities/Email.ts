@@ -21,7 +21,7 @@ class Email2 {
     this.to = user.email;
     this.firstName = user.firstName;
     this.url = url;
-    this.from = `Jonas Schmedtmann <${process.env.EMAIL_FROM}>`;
+    this.from = `Sharik Inc <${process.env.EMAIL_FROM}>`;
   }
 
   newTransport() {
@@ -61,7 +61,7 @@ class Email2 {
       to: this.to,
       subject,
       html,
-      text: convert(html),
+      text: convert(html), //  convert html to text
     };
 
     // 3) Create a transport and send email
