@@ -8,19 +8,6 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
 
 class UserController {
-  update(
-    uploadUserPhoto: RequestHandler<
-      ParamsDictionary,
-      any,
-      any,
-      ParsedQs,
-      Record<string, any>
-    >,
-    resizeUserPhoto: any,
-    update: any,
-  ) {
-    throw new Error('Method not implemented.');
-  }
   async getAll2() {
     console.log('entrou');
     await new FactoryCRUDController(User).getAll;
