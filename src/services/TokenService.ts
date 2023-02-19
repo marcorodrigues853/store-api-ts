@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { Token } from '../models/Token';
+
 interface TokenPayload {
   id: string;
   roles: string[];
@@ -33,6 +34,17 @@ class TokenService {
       refreshToken,
     };
   }
+
+  generateActivationAccountToken(email: string) {
+    const payload = { email };
+    const token = jwt.sign(
+      payload,
+      String(process.env.JWT_REFRESH_SECRET_KEY),
+      { expiresIn: '60m' },
+    );
+    return token;
+  }
+
   async saveToken(userId: string, refreshToken: string) {
     const tokenData = await Token.findOne({ user: userId });
     if (tokenData) {
@@ -43,25 +55,30 @@ class TokenService {
 
     return token;
   }
+
   async removeToken(refreshToken: string) {
     const tokenData = await Token.deleteOne({ refreshToken });
     return tokenData;
   }
+
   async findToken(refreshToken: string) {
     const tokenData = await Token.findOne({ refreshToken });
     return tokenData;
   }
+
   validateAccessToken(token: string) {
     try {
       const userData = jwt.verify(
         token,
         String(process.env.JWT_ACCESS_SECRET_KEY),
       );
+      console.log('userData validateAccessToken', userData);
       return userData as TokenPayload;
     } catch (e) {
-      return null;
+      throw e;
     }
   }
+
   validateRefreshToken(token: string) {
     try {
       const userData = jwt.verify(
@@ -71,7 +88,7 @@ class TokenService {
       console.log(userData.id);
       return userData;
     } catch (e) {
-      return null;
+      throw e;
     }
   }
 }
