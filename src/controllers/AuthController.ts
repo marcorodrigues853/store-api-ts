@@ -8,6 +8,7 @@ import { validationResult } from 'express-validator';
 
 import { hashSync } from 'bcryptjs';
 import Email from '../utilities/Email';
+import UserService from '../services/UserService';
 
 class AuthController {
   async register(req: Request, res: Response) {
@@ -53,9 +54,8 @@ class AuthController {
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.log(error.message);
-        return next(new AppError(error.message, 500));
+        return next(new AppError(error.message, 400));
       }
-      res.status(500).json(error);
     }
   }
 
@@ -197,6 +197,19 @@ class AuthController {
       message: 'Password changed with success',
       data: authToken,
     });
+  }
+
+  async activateAccount(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { token } = req.params;
+
+      const foundUser = await AuthService.activateAccount(token);
+
+      console.log('FOUNDUSER', foundUser);
+      res.status(200).json({ message: 'Account activated' });
+    } catch (error) {
+      next(new AppError('Invalid or expired token', 400));
+    }
   }
 }
 
