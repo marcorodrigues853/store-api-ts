@@ -14,6 +14,8 @@ import ExpressMongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import reviewRouter from './routers/reviewRouter';
 
+import errorMiddleware from './middleware/errorMiddleware';
+
 // import xss from 'xss-clean';
 // import helmet from 'helmet';
 
@@ -106,3 +108,5 @@ const startApp = async () => {
 };
 
 startApp();
+
+app.use(errorMiddleware);
