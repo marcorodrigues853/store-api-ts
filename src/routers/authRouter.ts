@@ -7,7 +7,7 @@ const router = Router();
 router.post(
   '/register',
   [
-    check('email', "Username can't be empty").notEmpty(),
+    check('firstName', "First name can't be empty").notEmpty(),
     check('email', 'Email is not valid').isEmail(),
     check('password').isStrongPassword({
       minLength: 8,

@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import AppError from '../exceptions/AppError';
@@ -53,11 +54,10 @@ export const resizeImages = async (
   const thumbnails: string[] = [];
 
   // to prevent event loop this will keep  a map od promises
+  const name = req.params.id ?? randomUUID();
   await Promise.all(
     req.files.images.map(async (file: any, index: number) => {
-      // const mimetype = file.mimetype.split('/')[1];
-
-      const fileName = `${req.params.id}-${++index}.webp`;
+      const fileName = `${name}-${++index}.webp`;
 
       await sharp(file.buffer)
         .resize({ width: 2000 })
