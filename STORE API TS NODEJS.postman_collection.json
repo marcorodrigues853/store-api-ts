@@ -37,7 +37,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"marco22@teste.com\",\n    \"password\": \"teste\"\n}",
+							"raw": "{\n    \"email\": \"admin@teste.com\",\n    \"password\": \"teste\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -45,7 +45,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/auth/login?email=marco22@teste.com&password=teste",
+							"raw": "{{URL}}/auth/login?email=admin2@teste.com&password=teste",
 							"host": [
 								"{{URL}}"
 							],
@@ -56,11 +56,60 @@
 							"query": [
 								{
 									"key": "email",
-									"value": "marco22@teste.com"
+									"value": "admin2@teste.com",
+									"description": "user ADMIN"
 								},
 								{
 									"key": "password",
-									"value": "teste"
+									"value": "teste",
+									"description": "password"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activate Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/auth/activation/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZjJjMWUzNmI1M2VjOTQ3ZTJiZjZmMCIsImlhdCI6MTY3Njg1MzczMSwiZXhwIjoxNjc2ODU3MzMxfQ.Ah95NqUwB4yqz_gLwxjWmdY7DNl29Gw-ejHG6q9XF5c",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"activation",
+								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZjJjMWUzNmI1M2VjOTQ3ZTJiZjZmMCIsImlhdCI6MTY3Njg1MzczMSwiZXhwIjoxNjc2ODU3MzMxfQ.Ah95NqUwB4yqz_gLwxjWmdY7DNl29Gw-ejHG6q9XF5c"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZjJjMWUzNmI1M2VjOTQ3ZTJiZjZmMCIsImlhdCI6MTY3Njg1MzczMSwiZXhwIjoxNjc2ODU3MzMxfQ.Ah95NqUwB4yqz_gLwxjWmdY7DNl29Gw-ejHG6q9XF5c",
+									"disabled": true
 								}
 							]
 						}
@@ -88,7 +137,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"marco100@teste.com\"\n}",
+							"raw": "{\n    \"email\": \"admin@teste.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -96,13 +145,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/auth/forgotPassword",
+							"raw": "{{URL}}/auth/forgotPassword?email=admin@teste.com",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"auth",
 								"forgotPassword"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "admin@teste.com"
+								}
 							]
 						}
 					},
@@ -137,14 +192,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/auth/resetPassword/59863fd6-d0df-4c99-a084-ae79980d836f",
+							"raw": "{{URL}}/auth/resetPassword/235c2c29-1dca-4cbd-b885-215caa8a0ba8",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"auth",
 								"resetPassword",
-								"59863fd6-d0df-4c99-a084-ae79980d836f"
+								"235c2c29-1dca-4cbd-b885-215caa8a0ba8"
 							],
 							"query": [
 								{
@@ -190,7 +245,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"teste4@teste.com\",\n    \"password\": \"teste\"\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -267,7 +322,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstName\": \"Miguel\",\n    \"lastName\": \"NAbo\",\n    \"email\":\"miguel232222333222221321322@teste.com\",\n    \"password\": \"teste\",\n    \"passwordConfirm\":\"teste\",\n    \"roles\":\"bastard\"\n\n}",
+							"raw": "{\n    \"firstName\": \"Alexx\",\n    \"lastName\": \"Ageev\",\n    \"email\":\"user@teste.com\",\n    \"password\": \"teste\",\n    \"passwordConfirm\":\"teste\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -275,35 +330,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/auth/register?firstName=ze&lastName=to&email=teste7@teste.com&password=teste&passwordConfirm=teste",
+							"raw": "{{URL}}/auth/register",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"auth",
 								"register"
-							],
-							"query": [
-								{
-									"key": "firstName",
-									"value": "ze"
-								},
-								{
-									"key": "lastName",
-									"value": "to"
-								},
-								{
-									"key": "email",
-									"value": "teste7@teste.com"
-								},
-								{
-									"key": "password",
-									"value": "teste"
-								},
-								{
-									"key": "passwordConfirm",
-									"value": "teste"
-								}
 							]
 						}
 					},
@@ -323,14 +356,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/api/products/63ef6a50e86e9f63f9e02e16/reviews",
+							"raw": "{{URL}}/api/products/63ef639341efd2c1ed24691a/reviews",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"63ef6a50e86e9f63f9e02e16",
+								"63ef639341efd2c1ed24691a",
 								"reviews"
 							]
 						}
@@ -354,7 +387,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\"review\": \"nabo é o que és\",\n\"rating\":1\n}",
+							"raw": "{\n\"review\": \"Great Product change my life.\",\n\"rating\":5\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -362,14 +395,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/api/products/63ef6a50e86e9f63f9e02e16/reviews",
+							"raw": "{{URL}}/api/products/63f2c762173a6437b72c4cbf/reviews",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"63ef6a50e86e9f63f9e02e16",
+								"63f2c762173a6437b72c4cbf",
 								"reviews"
 							]
 						}
@@ -401,38 +434,40 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "ze 232",
+									"value": "Phones ApplInTosh",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "teste",
+									"value": "Wooow great sound!",
 									"type": "text"
 								},
 								{
 									"key": "price",
-									"value": "33",
+									"value": "100",
 									"type": "text"
 								},
 								{
 									"key": "images",
 									"type": "file",
-									"src": "/Users/marcorodrigues/Desktop/new-tour-2.jpg"
+									"src": "/Users/marcorodrigues/Downloads/kuiye-chen-NuOGFo4PudE-unsplash.jpg"
 								},
 								{
 									"key": "images",
 									"type": "file",
-									"src": "/Users/marcorodrigues/Desktop/product15.jpg"
+									"src": "/Users/marcorodrigues/Downloads/adam-birkett-6cXZnFCd2KQ-unsplash.jpg"
 								},
 								{
 									"key": "images",
 									"type": "file",
-									"src": "/Users/marcorodrigues/Desktop/new-tour-1.jpg"
+									"src": [],
+									"disabled": true
 								},
 								{
 									"key": "images",
 									"type": "file",
-									"src": "/Users/marcorodrigues/Desktop/new-tour-4.jpg"
+									"src": [],
+									"disabled": true
 								}
 							]
 						},
@@ -469,35 +504,35 @@
 							"formdata": [
 								{
 									"key": "price",
-									"value": "2222",
+									"value": "322",
 									"type": "text"
 								},
 								{
 									"key": "images",
 									"type": "file",
-									"src": []
+									"src": "/Users/marcorodrigues/Downloads/olena-sergienko-cHlK4sZXOQo-unsplash.jpg"
 								},
 								{
 									"key": "images",
 									"type": "file",
-									"src": []
+									"src": "/Users/marcorodrigues/Downloads/bryan-natanael-c4a_0kycTUE-unsplash.jpg"
 								},
 								{
 									"key": "images",
 									"type": "file",
-									"src": "/Users/marcorodrigues/Desktop/new-tour-4.jpg"
+									"src": "/Users/marcorodrigues/Downloads/amjith-s-NOY_FzRublM-unsplash.jpg"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{URL}}/api/products/63ef6a74e86e9f63f9e02e22",
+							"raw": "{{URL}}/api/products/63f2c67a173a6437b72c4cbc",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"63ef6a74e86e9f63f9e02e22"
+								"63f2c67a173a6437b72c4cbc"
 							]
 						}
 					},
@@ -529,14 +564,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/api/products/63e0d897cf9d0d86796d36ab",
+							"raw": "{{URL}}/api/products/63ef6a54e86e9f63f9e02e18",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"63e0d897cf9d0d86796d36ab"
+								"63ef6a54e86e9f63f9e02e18"
 							]
 						}
 					},
@@ -594,7 +629,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/api/products",
+							"raw": "{{URL}}/api/products?price[gt]=1&page=1&limit=1000&sort=-ratingsAveraged,name, price&fields=name,price,description,ratingQuantity,ratingsAveraged",
 							"host": [
 								"{{URL}}"
 							],
@@ -621,31 +656,27 @@
 								},
 								{
 									"key": "price[gt]",
-									"value": "100",
-									"disabled": true
+									"value": "1"
 								},
 								{
 									"key": "page",
-									"value": "2",
-									"description": "number of Page",
-									"disabled": true
+									"value": "1",
+									"description": "number of Page"
 								},
 								{
 									"key": "limit",
-									"value": "2",
-									"description": "limit of results per page",
-									"disabled": true
+									"value": "1000",
+									"description": "limit of results per page"
 								},
 								{
 									"key": "sort",
-									"value": "name, price",
-									"description": "sort multiple fields",
-									"disabled": true
+									"value": "-ratingsAveraged,name, price",
+									"description": "sort multiple fields"
 								},
 								{
 									"key": "fields",
-									"value": "name,price,-_id",
-									"disabled": true
+									"value": "name,price,description,ratingQuantity,ratingsAveraged",
+									"description": "choose fields to show"
 								}
 							]
 						}
@@ -680,14 +711,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/api/products/63ef6a54e86e9f63f9e02e18",
+							"raw": "{{URL}}/api/products/63f2c762173a6437b72c4cbf",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"63ef6a54e86e9f63f9e02e18"
+								"63f2c762173a6437b72c4cbf"
 							]
 						}
 					},
@@ -738,7 +769,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/api/users?sort=-name",
+							"raw": "{{URL}}/api/users?sort=-name&fields=firstName, email,photo",
 							"host": [
 								"{{URL}}"
 							],
@@ -787,107 +818,8 @@
 								},
 								{
 									"key": "fields",
-									"value": "+password, email, +passwordConfirm",
-									"description": "select or  ",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get All TESTE",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZTEzYzIyYWIzOGNiNjMyZjM5MGM2OSIsImlhdCI6MTY3NTcxMzU0MywiZXhwIjoxNjc3MDA5NTQzfQ.N4TbDGzFqgzsXMNh1yUfZYUtceOkUEgqPPZ9cSqAX-k",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL}}/api/usersTeste",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"api",
-								"usersTeste"
-							],
-							"query": [
-								{
-									"key": "price",
-									"value": "2",
-									"disabled": true
-								},
-								{
-									"key": "name",
-									"value": "BBBB",
-									"disabled": true
-								},
-								{
-									"key": "price[lte]",
-									"value": "4500",
-									"description": "accept LTE LT ",
-									"disabled": true
-								},
-								{
-									"key": "price[gt]",
-									"value": "1",
-									"disabled": true
-								},
-								{
-									"key": "page",
-									"value": "1",
-									"description": "number of Page",
-									"disabled": true
-								},
-								{
-									"key": "limit",
-									"value": "1",
-									"description": "limit of results per page",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "-name",
-									"description": "sort multiple fields",
-									"disabled": true
-								},
-								{
-									"key": "fields",
-									"value": "+password, email, +passwordConfirm",
-									"description": "select or  ",
-									"disabled": true
+									"value": "firstName, email,photo",
+									"description": "select fields to return"
 								}
 							]
 						}
@@ -971,14 +903,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/api/users/63ef6a8ee86e9f63f9e02e2d",
+							"raw": "{{URL}}/api/users/63f2c1e36b53ec947e2bf6f0",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"api",
 								"users",
-								"63ef6a8ee86e9f63f9e02e2d"
+								"63f2c1e36b53ec947e2bf6f0"
 							]
 						}
 					},
@@ -1022,19 +954,26 @@
 								{
 									"key": "photo",
 									"type": "file",
-									"src": "/Users/marcorodrigues/Downloads/hannah-busing-ff5K3-kYPHA-unsplash.jpg"
+									"src": "/Users/marcorodrigues/Downloads/hannah-busing-ff5K3-kYPHA-unsplash.jpg",
+									"disabled": true
+								},
+								{
+									"key": "isActive",
+									"value": "true",
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "{{URL}}/api/users/63f101b2af4c22941f6b1505",
+							"raw": "{{URL}}/api/users/63f2c1e36b53ec947e2bf6f0",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"api",
 								"users",
-								"63f101b2af4c22941f6b1505"
+								"63f2c1e36b53ec947e2bf6f0"
 							]
 						}
 					},
@@ -1081,93 +1020,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\"review\": \"TESTES sdfdsfsdfds\",\n\"rating\":5,\n\"product\": \"63df9f65346deb70726bd9a8\",\n\"user\": \"63e7fd095928170fd3dd1a7b\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL}}/api/reviews",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"api",
-								"reviews"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "delete",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZTEzYzIyYWIzOGNiNjMyZjM5MGM2OSIsImlhdCI6MTY3NTcxMzU0MywiZXhwIjoxNjc3MDA5NTQzfQ.N4TbDGzFqgzsXMNh1yUfZYUtceOkUEgqPPZ9cSqAX-k",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL}}/api/reviews/63ef639341efd2c1ed24691a",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"api",
-								"reviews",
-								"63ef639341efd2c1ed24691a"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "update",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\"review\": \"TESTES 4444\",\n\"rating\":5,\n\"product\": \"63df9f65346deb70726bd9a8\",\n\"user\": \"63e7fd095928170fd3dd1a7b\"\n}",
+							"raw": "{\n\"review\": \"TESTES sdfdsfsdfds\",\n\"rating\":5,\n\"product\": \"63f2c762173a6437b72c4cbf\",\n\"user\": \"63f2c1e36b53ec947e2bf6f0\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
