@@ -36,12 +36,10 @@ class ProductService {
   }
 
   async deleteOne(id: string) {
+    console.log('ID', id);
     const deleted = await Product.findByIdAndDelete(id);
     return deleted;
   }
 }
-
-const Model: any = Product;
-const createProduct = factory.createOne(Model);
 
 export default new ProductService();

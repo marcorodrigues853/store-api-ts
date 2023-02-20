@@ -52,11 +52,10 @@ class ProductController {
   async deleteOne(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-
-      if (!id) new AppError('ID not provided', 404);
+      if (!id) next(new AppError('ID not provided', 404));
 
       const deleted = await ProductService.deleteOne(id);
-      if (!deleted) new AppError('já foste oh candido', 200);
+      if (!deleted) next(new AppError('já foste oh candido', 200));
 
       return res.status(200).json(deleted);
     } catch (error: unknown) {

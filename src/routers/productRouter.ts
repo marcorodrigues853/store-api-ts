@@ -26,11 +26,7 @@ router
 router
   .route('/:id')
   .get(ProductController.getOne)
-  .delete(
-    authMiddleware,
-    roleMiddleware(['ADMIN', 'USER']),
-    ProductController.deleteOne,
-  )
+  .delete(authMiddleware, ProductController.deleteOne)
   .patch(
     authMiddleware,
     roleMiddleware(['ADMIN', 'USER']),
