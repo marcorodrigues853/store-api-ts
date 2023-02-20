@@ -3,7 +3,7 @@ import { User } from '../models/UsersModel';
 import { IUser } from './../interface/IUser';
 import { compareSync, hashSync } from 'bcryptjs';
 import TokenService from './TokenService';
-import AppError from '../utilities/AppError';
+import AppError from '../exceptions/AppError';
 import Email from '../utilities/Email';
 import UserService from './UserService';
 
@@ -23,13 +23,13 @@ class AuthService {
       throw new AppError('Invalid Token of activation.', 401);
     }
   }
-  async isValidPassword(password: string, newPassword: string) {
+  isValidPassword(password: string, newPassword: string) {
     return compareSync(password, newPassword);
   }
 
   async login(email: string, password: string) {
     const foundUser = await User.findOne({ email });
-
+    console.log('authLogin', foundUser);
     if (!foundUser) {
       throw new Error(`User ${email} not found!`);
     }
@@ -42,7 +42,7 @@ class AuthService {
     //* compare if passwords is the same
 
     const hasValidPassword = this.isValidPassword(password, foundUser.password);
-
+    console.log(hasValidPassword);
     if (!hasValidPassword) throw new Error('Password invalid');
 
     const tokens = TokenService.generateTokens(foundUser);

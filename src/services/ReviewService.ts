@@ -4,9 +4,7 @@ import { Review } from '../models/ReviewModel';
 
 class ReviewService {
   async deleteOne(id: string) {
-    console.log('id', id);
     const deleted = await Review.findByIdAndDelete(id);
-    console.log('deleted', deleted);
     return deleted;
   }
   async create(review: IReview) {
@@ -19,7 +17,7 @@ class ReviewService {
       new: true,
     });
     if (!updatedProduct) {
-      throw new Error('Product not found.');
+      throw new Error('Review not found.');
     }
     return updatedProduct;
   }

@@ -1,6 +1,6 @@
 import { User } from './../models/UsersModel';
 import AuthService from '../services/AuthService';
-import AppError from '../utilities/AppError';
+import AppError from '../exceptions/AppError';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
@@ -8,9 +8,10 @@ import { validationResult } from 'express-validator';
 
 import { hashSync } from 'bcryptjs';
 import Email from '../utilities/Email';
+import { nextTick } from 'process';
 
 class AuthController {
-  async register(req: Request, res: Response) {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req);
 
@@ -31,10 +32,7 @@ class AuthController {
 
       return res.status(201).json({ message: 'User created', ...createdUser });
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        return res.status(500).json(error.message);
-      }
-      res.status(500).json('Registration failed. Try again.');
+      next(error);
     }
   }
 
@@ -50,13 +48,11 @@ class AuthController {
 
       return res.json({ message: 'Login success', data: foundUser });
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        return next(new AppError(error.message, 400));
-      }
+      next(error);
     }
   }
 
-  async logout(req: Request, res: Response) {
+  async logout(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.cookies.refreshToken)
         return res.status(400).json({ message: 'Refresh token not found' }); // TODO: add class
@@ -66,14 +62,11 @@ class AuthController {
       res.clearCookie('refreshToken');
       return res.status(200).json(token);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.log(error.message); // TODO: add class
-      }
-      res.status(500).json('Logout failed');
+      next(error);
     }
   }
 
-  async refresh(req: Request, res: Response) {
+  async refresh(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.cookies.refreshToken) {
         return res.status(400).json({ message: 'Refresh token not found' });
@@ -88,10 +81,7 @@ class AuthController {
 
       return res.json(foundUser);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-      res.status(500).json('Refresh token failed');
+      next(error);
     }
   }
 
@@ -106,13 +96,6 @@ class AuthController {
     });
   };
 
-  /**
-   *
-   * @param req
-   * @param res
-   * @param next
-   * @returns
-   */
   async forgotPassword(req: Request, res: Response, next: NextFunction) {
     // 1) get user of posted email
     const { email } = req.body;
@@ -136,63 +119,57 @@ class AuthController {
         message: 'Token sent to email!',
       });
     } catch (error) {
-      // TODO: define error
       // clause guard to reset token to prevent security breaches
       if (foundUser) {
         foundUser.passwordResetToken = undefined;
         foundUser.passwordResetExpires = undefined;
         await foundUser.save({ validateBeforeSave: false });
       }
-
-      return next(
-        new AppError(
-          'There was an error sending the email. Try again later!',
-          500,
-        ),
-      );
+      next(new AppError('fodase', 200));
+      next(error);
     }
   }
 
   async resetPassword(req: Request, res: Response, next: NextFunction) {
-    //* 1) Get user based on the token
-    const { token } = req.params;
+    try {
+      //* 1) Get user based on the token
+      const { token } = req.params;
 
-    //* 2) if token has not expired, and there is user, set the new password
-    const foundUser = await User.findOne({
-      passwordResetToken: token,
-      passwordResetExpires: { $gt: Date.now() },
-    });
-
-    if (!foundUser)
-      return res.status(400).json({
-        status: 'Bad Request',
-        message: 'Token is invalid or not found',
+      //* 2) if token has not expired, and there is user, set the new password
+      const foundUser = await User.findOne({
+        passwordResetToken: token,
+        passwordResetExpires: { $gt: Date.now() },
       });
-    //return next(new AppError('Token is invalid or has expired', 400));
 
-    //* 3) Update changePasswordAt property for the user
+      if (!foundUser)
+        return next(new AppError('Token is invalid or has expired', 400));
 
-    const { newPassword, newPasswordConfirm } = req.body;
+      //* 3) Update changePasswordAt property for the user
 
-    const hasConfirmedPassword = newPassword === newPasswordConfirm;
-    if (!hasConfirmedPassword) throw new AppError('Password not match.', 422);
+      const { newPassword, newPasswordConfirm } = req.body;
 
-    const hashedPassword = hashSync(req.body.password);
-    foundUser.password = hashedPassword;
-    foundUser.passwordConfirm = hashedPassword;
-    foundUser.passwordResetExpires = undefined;
-    foundUser.passwordResetToken = undefined;
-    await foundUser.save();
+      const hasConfirmedPassword = newPassword === newPasswordConfirm;
+      if (!hasConfirmedPassword) throw new AppError('Password not match.', 422);
 
-    //* 4) Log the user in, send JWT to the client
-    const { email } = foundUser;
-    const authToken = await AuthService.login(email, req.body.password);
+      const hashedPassword = hashSync(req.body.password);
+      foundUser.password = hashedPassword;
+      foundUser.passwordConfirm = hashedPassword;
+      foundUser.passwordResetExpires = undefined;
+      foundUser.passwordResetToken = undefined;
+      await foundUser.save();
 
-    return res.status(200).json({
-      status: 200,
-      message: 'Password changed with success',
-      data: authToken,
-    });
+      //* 4) Log the user in, send JWT to the client
+      const { email } = foundUser;
+      const authToken = await AuthService.login(email, req.body.password);
+
+      return res.status(200).json({
+        status: 200,
+        message: 'Password changed with success',
+        data: authToken,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   async activateAccount(req: Request, res: Response, next: NextFunction) {
@@ -203,7 +180,7 @@ class AuthController {
         message: 'Account activated',
       });
     } catch (error) {
-      next(new AppError('Invalid or expired token', 400));
+      next(error);
     }
   }
 }

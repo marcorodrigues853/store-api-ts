@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
-import AppError from '../utilities/AppError';
+import AppError from '../exceptions/AppError';
 import APIFilters from '../utilities/APIFilters';
 
 export const createOne = (Model: Model<unknown>) => {
@@ -70,7 +70,6 @@ export const getOne =
 
 export const getAll =
   (Model: any) => async (req: Request, res: Response, next: NextFunction) => {
-    console.log('akiiiiiiiii');
     const filters = new APIFilters(Model.find(), req.query)
       .filter()
       .sort()

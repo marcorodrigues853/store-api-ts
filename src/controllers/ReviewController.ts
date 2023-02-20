@@ -1,44 +1,37 @@
 import { Request, Response, NextFunction } from 'express';
 import ReviewService from '../services/ReviewService';
-import AppError from '../utilities/AppError';
-
-interface RequestWithUser extends Request {
-  user: any;
-}
+import AppError from '../exceptions/AppError';
 
 class Review {
-  async deleteOne(req: Request, res: Response) {
+  async deleteOne(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       if (!id) new AppError('ID not provided', 404);
 
       const deleted = await ReviewService.deleteOne(id);
-      if (!deleted) new AppError(`Cant't delete`, 200);
+      if (!deleted) new AppError(`Cant't delete`, 404);
 
       return res.status(200).json(deleted);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        res.status(400).json(error.message);
+        next(error);
       }
     }
   }
 
-  async updateOne(req: Request, res: Response) {
+  async updateOne(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const product = await ReviewService.update(id, req.body);
       res.status(201).json({ status: 'success', data: product });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        res.status(500).json({
-          message: 'Failed to update review.',
-          error,
-        });
+        next(error);
       }
     }
   }
 
-  async getAll(req: Request, res: Response) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       let filter = {};
 
@@ -53,35 +46,28 @@ class Review {
         },
       });
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(422).json({
-          status: 'error',
-          error: error.message,
-        });
-      }
+      next(error);
     }
   }
 
   async createOne(req: any, res: Response, next: NextFunction) {
     try {
       if (!req.body.product) req.body.product = req.params.id;
-      console.log('REQ:', req.body); // TODO: need to be reviewed with Alex Ageev
+      new AppError('No document found with that ID', 404);
       if (!req.body.user) req.body.user = req.user.id;
 
       const newReview = await ReviewService.create(req.body);
-      console.log('newReview:', newReview);
       res.status(200).json({
         status: 'success',
         data: {
           review: newReview,
         },
       });
-      next();
     } catch (error) {
-      res.status(422).json({
-        status: 'error',
-        error,
-      });
+      console.log('EROOOO', error);
+      if (error instanceof Error) {
+        next(error);
+      }
     }
   }
 }

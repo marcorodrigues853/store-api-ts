@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
-import AppError from '../utilities/AppError';
+import AppError from '../exceptions/AppError';
 import sharp from 'sharp';
 
 const multerStorage = multer.memoryStorage();

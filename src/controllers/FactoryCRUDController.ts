@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import AppError from '../utilities/AppError';
+import AppError from '../exceptions/AppError';
 
 import FactoryCRUDService from '../services/FactoryCRUDService';
 

@@ -32,8 +32,8 @@ export default (allowedRoles: string[]) => {
       }
       req.user = decoded;
       next();
-    } catch (e) {
-      return res.status(401).json({ message: 'Invalid token' });
+    } catch (error) {
+      next(error);
     }
   };
 };

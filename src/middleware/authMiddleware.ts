@@ -1,9 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
-
-interface RequestWithUser extends Request {
-  user: any;
-}
+import AppError from '../exceptions/AppError';
 
 export default (req: any, res: Response, next: NextFunction) => {
   try {
@@ -11,21 +8,14 @@ export default (req: any, res: Response, next: NextFunction) => {
 
     const authHeader = req.headers.authorization;
 
-    if (!authHeader)
-      res.status(401).json({
-        message: 'No authorization header', // TODO: change to class errors
-      });
+    if (!authHeader) next(new AppError('No Authorization Header', 401));
 
     const token = authHeader.split(' ')[1];
-    if (!token)
-      res.status(401).json({
-        message: 'Invalid token', // TODO: change to class errors
-      });
+    if (!token) next(new AppError('Invalid token', 401));
 
     req.user = jwt.verify(token, String(process.env.JWT_ACCESS_SECRET_KEY));
     next();
   } catch (error) {
-    console.error(error);
-    return res.status(401).json({ message: 'Bad format token' });
+    next(error);
   }
 };

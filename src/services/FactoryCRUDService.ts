@@ -1,5 +1,5 @@
 import APIFilters from '../utilities/APIFilters';
-import AppError from '../utilities/AppError';
+import AppError from '../exceptions/AppError';
 
 class FactoryCRUDService {
   Model: any;

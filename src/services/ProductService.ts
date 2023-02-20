@@ -1,6 +1,6 @@
 import { Product } from '../models/ProductsModel';
 import { IProduct } from './../interface/IProducts';
-import AppError from '../utilities/AppError';
+import AppError from '../exceptions/AppError';
 import APIFilters from '../utilities/APIFilters';
 
 import factory from '../controllers/HandlerFactory';

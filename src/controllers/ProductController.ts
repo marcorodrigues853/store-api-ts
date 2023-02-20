@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import ProductService from '../services/ProductService';
-import AppError from '../utilities/AppError';
+import AppError from '../exceptions/AppError';
 
 class ProductController {
   // factory: any;
@@ -10,20 +10,7 @@ class ProductController {
   //   this.factory = new HandlerFactory(model);
   // }
 
-  checkID(req: Request, res: Response, next: NextFunction, val: any): void {
-    console.log('val', val);
-
-    //* clause guard that verify if has one ID
-    if (val * 1 > 0)
-      res.status(404).json({
-        status: 'Fail',
-        message: 'Invalid ID',
-      });
-
-    next();
-  }
-
-  async create(req: Request, res: Response) {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
       const createProduct = await ProductService.create(req.body); // pass req.body
       res.status(201).json({
@@ -32,13 +19,11 @@ class ProductController {
         requestedAt: new Date(Date.now()).toUTCString(),
       });
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        res.status(400).json(error.message);
-      }
+      next(error);
     }
   }
 
-  async getAll(req: Request, res: Response) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const queryObject = { ...req.query };
       const allProducts = await ProductService.getAll(queryObject);
@@ -48,13 +33,11 @@ class ProductController {
         data: allProducts,
       });
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        res.status(400).json(error.message);
-      }
+      next(error);
     }
   }
 
-  async getOne(req: Request, res: Response) {
+  async getOne(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       if (!id) new AppError('ID not provided', 404);
@@ -62,15 +45,11 @@ class ProductController {
       const product = await ProductService.getOne(id);
       return res.status(200).json(product);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        res
-          .status(400)
-          .json({ status: 'fail', code: error, message: error.message });
-      }
+      next(error);
     }
   }
 
-  async deleteOne(req: Request, res: Response) {
+  async deleteOne(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
@@ -81,24 +60,17 @@ class ProductController {
 
       return res.status(200).json(deleted);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        res.status(400).json(error.message);
-      }
+      next(error);
     }
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const product = await ProductService.update(id, req.body);
       res.status(201).json({ status: 'success', data: product });
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        res.status(500).json({
-          message: 'Failed to update product.',
-          error,
-        });
-      }
+      next(error);
     }
   }
 }
