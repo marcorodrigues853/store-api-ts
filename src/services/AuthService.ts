@@ -80,7 +80,7 @@ class AuthService {
         tokens.refreshToken,
       );
 
-      const activationLink = `${process.env.API_URL}/auth/activate/${tokens.refreshToken}`;
+      const activationLink = `${process.env.API_URL}/auth/activation/${tokens.refreshToken}`;
       await new Email(newUser, activationLink).sendWelcome();
 
       return { createdUser };
