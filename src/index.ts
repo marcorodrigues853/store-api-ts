@@ -66,7 +66,7 @@ app.use(ExpressMongoSanitize());
 //* Prevent parameter pollution with filter
 app.use(
   hpp({
-    whitelist: ['name', 'price', 'createdAt'],
+    whitelist: ['name', 'price', 'photo', 'createdAt'],
   }),
 );
 
