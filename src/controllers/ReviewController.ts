@@ -64,7 +64,6 @@ class Review {
         },
       });
     } catch (error) {
-      console.log('EROOOO', error);
       if (error instanceof Error) {
         next(error);
       }

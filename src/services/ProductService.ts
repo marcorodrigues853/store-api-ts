@@ -43,11 +43,5 @@ class ProductService {
 
 const Model: any = Product;
 const createProduct = factory.createOne(Model);
-console.log(createProduct);
-// const createUserAlex = factory.createOne(UsertAlex);
-// const getProductAlex = factory.getOne(ProductAlex);
-// const getAllProductAlex = factory.getAll(ProductAlex);
-// const updateProductAlex = factory.updateOne(ProductAlex);
-// const deleteProductAlex = factory.deleteOne(ProductAlex);
 
 export default new ProductService();

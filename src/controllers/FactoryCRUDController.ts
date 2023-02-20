@@ -83,7 +83,6 @@ class FactoryCRUDController {
 
   async getAll(req: Request, res: Response) {
     try {
-      console.log('entrou getALL CRUD');
       const response = this.service.getAll(req.query);
 
       return res.status(200).json({
@@ -106,44 +105,3 @@ class FactoryCRUDController {
   }
 }
 export default FactoryCRUDController;
-
-// export const getOne =
-//   (Model: Model<unknown>, popOptions: any) =>
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     let query = Model.findById(req.params.id);
-//     if (popOptions) query = query.populate(popOptions);
-//     const response = await query;
-
-//     if (!response) next(new AppError('No document found with that ID', 404));
-
-//     res.status(200).json({
-//       status: 'success',
-//       data: {
-//         data: response,
-//       },
-//       requestedAt: new Date(Date.now()).toUTCString(),
-//     });
-//   };
-
-// export const getAll =
-//   (Model: any) => async (req: Request, res: Response, next: NextFunction) => {
-//     console.log('akiiiiiiiii');
-//     const filters = new APIFilters(Model.find(), req.query)
-//       .filter()
-//       .sort()
-//       .limitFields()
-//       .paginate();
-
-//     const response = await filters.query;
-
-//     res.status(200).json({
-//       status: 'success',
-//       results: response.length,
-//       data: {
-//         data: response,
-//       },
-//       requestedAt: new Date(Date.now()).toUTCString(),
-//     });
-//   };
-
-// export default { getAll, getOne, deleteOne, createOne, updateOne };

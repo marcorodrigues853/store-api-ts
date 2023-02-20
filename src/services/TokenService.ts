@@ -84,10 +84,9 @@ class TokenService {
         token,
         String(process.env.JWT_REFRESH_SECRET_KEY),
       ) as TokenPayload;
-      console.log(userData.id);
       return userData;
-    } catch (e) {
-      throw e;
+    } catch (error) {
+      throw erro;
     }
   }
 }

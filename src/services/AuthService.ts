@@ -11,16 +11,14 @@ class AuthService {
   async activateAccount(token: string) {
     try {
       const user = TokenService.validateRefreshToken(token);
-      console.log('validated', user);
       const updatedUser = await UserService.update(user.id, { isActive: true });
       const { deletedCount } = await TokenService.removeToken(token);
-      console.log('deletedCount', deletedCount);
+
       if (!deletedCount)
         throw new AppError('Invalid Token of activation.', 401);
       return updatedUser;
     } catch (error) {
-      console.log(error);
-      throw new AppError('Invalid Token of activation.', 401);
+      throw error;
     }
   }
   isValidPassword(password: string, newPassword: string) {
@@ -29,20 +27,16 @@ class AuthService {
 
   async login(email: string, password: string) {
     const foundUser = await User.findOne({ email });
-    console.log('authLogin', foundUser);
     if (!foundUser) {
       throw new Error(`User ${email} not found!`);
     }
 
-    console.log('!foundUser.isActive', !foundUser.isActive);
-    console.log('!foundUser.isActive', foundUser);
     if (!foundUser.isActive) {
       throw new Error(`User ${email} active, consult your mail!`);
     }
-    //* compare if passwords is the same
 
+    //* compare if passwords is the same
     const hasValidPassword = this.isValidPassword(password, foundUser.password);
-    console.log(hasValidPassword);
     if (!hasValidPassword) throw new Error('Password invalid');
 
     const tokens = TokenService.generateTokens(foundUser);
@@ -90,8 +84,6 @@ class AuthService {
       await new Email(newUser, activationLink).sendWelcome();
 
       return { createdUser };
-    } else {
-      console.log('Role not found');
     }
   }
 

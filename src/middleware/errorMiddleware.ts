@@ -39,7 +39,6 @@ const sendErrorDev = (err: AppError, req: Request, res: Response) => {
 };
 
 const sendErrorProd = (err: AppError, req: Request, res: Response) => {
-
   if (req.originalUrl.startsWith('/api')) {
     // A) Operational, trusted error: send message to client
     if (err.isOperational) {
@@ -75,7 +74,6 @@ const sendErrorProd = (err: AppError, req: Request, res: Response) => {
 };
 
 export default (err: any, req: Request, res: Response) => {
-  console.log('akiiiiii');
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
