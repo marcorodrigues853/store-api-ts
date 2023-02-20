@@ -86,7 +86,7 @@ class TokenService {
       ) as TokenPayload;
       return userData;
     } catch (error) {
-      throw erro;
+      throw error;
     }
   }
 }
