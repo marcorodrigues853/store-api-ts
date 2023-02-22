@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -15,6 +14,7 @@ import hpp from 'hpp';
 import reviewRouter from './routers/reviewRouter';
 
 import errorMiddleware from './middleware/errorMiddleware';
+import express, { Request, Response } from 'express';
 
 // import xss from 'xss-clean';
 // import helmet from 'helmet';
@@ -78,8 +78,11 @@ app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/reviews', reviewRouter);
 
-app.get('*', (req: express.Request, res: express.Response) => {
-  res.status(404).send('Not found');
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json('Server Running!');
+});
+app.get('*', (req: Request, res: Response) => {
+  res.status(404).json('Not found');
 });
 
 const connectToDb = async () => {
