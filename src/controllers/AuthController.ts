@@ -8,7 +8,6 @@ import { validationResult } from 'express-validator';
 
 import { hashSync } from 'bcryptjs';
 import Email from '../utilities/Email';
-import { nextTick } from 'process';
 
 class AuthController {
   async register(req: Request, res: Response, next: NextFunction) {
